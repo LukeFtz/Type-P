@@ -4,12 +4,20 @@ import Logo from "../components/geral/Logo";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { LinearGradient } from "expo-linear-gradient";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { StackScreenProps } from "@react-navigation/stack";
+import { RootStackParamList } from "../utilities/types";
+import { StatusBar } from "expo-status-bar";
 
-const { width, height } = Dimensions.get("screen");
+const { width } = Dimensions.get("screen");
 
-const Home: React.FC = () => {
+type screenNavigationProp = StackScreenProps<RootStackParamList, "Home">;
+
+const Home: React.FC<screenNavigationProp> = ({ navigation }) => {
   const [fontsLoaded] = useFonts({
     Raleway: require("../assets/fonts/Raleway-Regular.ttf"),
+    ZenLight: require("../assets/fonts/ZenKakuGothicAntique-Light.ttf"),
+    ZenBold: require("../assets/fonts/ZenKakuGothicAntique-Bold.ttf"),
   });
 
   useEffect(() => {
@@ -29,16 +37,28 @@ const Home: React.FC = () => {
   if (!fontsLoaded) {
     return null;
   }
+
+  const navigateToNextScreen = () => {
+    navigation.navigate("Type");
+  };
+
   return (
-    <View style={styles.container}>
-      <Logo />
+    <View style={styles.container} onLayout={onLayoutRootView}>
+      <View style={styles.viewLogo}>
+        <Logo />
+      </View>
       <Text style={styles.textTitle}>Type-P</Text>
-      <View>
+      <TouchableOpacity onPress={navigateToNextScreen}>
         <LinearGradient
           colors={["#42C3A1", "#fff"]}
-          style={styles.btnView}
-        ></LinearGradient>
-      </View>
+          style={styles.btnBorderView}
+        >
+          <LinearGradient colors={["#CBEED5", "#fff"]} style={styles.btnView}>
+            <Text style={styles.txtBtn}>RECICLAR</Text>
+          </LinearGradient>
+        </LinearGradient>
+      </TouchableOpacity>
+      <StatusBar style="dark" />
     </View>
   );
 };
@@ -56,13 +76,29 @@ const styles = StyleSheet.create({
     fontFamily: "Raleway",
     fontSize: 30,
     color: "#585858",
+    marginBottom: 40,
   },
   btnView: {
     width: width / 1.2,
     height: width / 1.2,
     borderRadius: width / 2,
-    borderWidth: 5,
-    borderTopColor: "#42C3A1",
-    borderBottomColor: "#fff",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  btnBorderView: {
+    width: width / 1.15,
+    height: width / 1.15,
+    borderRadius: width / 2,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  txtBtn: {
+    fontFamily: "ZenLight",
+    color: "#1C896C",
+    fontSize: 40,
+  },
+  viewLogo: {
+    width: 191,
+    height: 214,
   },
 });
