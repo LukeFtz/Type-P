@@ -22,7 +22,7 @@ const Type: React.FC<screenNavigationProp> = (navigationProps) => {
         <Text style={styles.txtPlasticLabels}>PEBD</Text>
       </View>
       <View style={styles.viewBtn}>
-        <Forward goTo="CONFIG" {...navigationProps} />
+        <Forward goTo="CONFIGIGURATION" {...navigationProps} />
       </View>
     </View>
   );

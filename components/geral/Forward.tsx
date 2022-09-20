@@ -6,13 +6,13 @@ import { RootStackParamList } from "../../utilities/types";
 import { StackScreenProps } from "@react-navigation/stack";
 
 type navigationProps = {
-  goTo: "CONFIG";
+  goTo: "CONFIGIGURATION";
 } & StackScreenProps<RootStackParamList>;
 
 const Forward: React.FC<navigationProps> = ({ goTo, navigation }) => {
   const goToNextPage = () => {
-    if (goTo === "CONFIG") {
-      navigation.navigate("Configs");
+    if (goTo === "CONFIGIGURATION") {
+      navigation.navigate("Configuration");
     }
   };
 

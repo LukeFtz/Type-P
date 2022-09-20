@@ -5,6 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./screens/Home";
 import Type from "./screens/Type";
+import Configuration from "./screens/Configuration";
 import { RootStackParamList } from "./utilities/types";
 import { LinearGradient } from "expo-linear-gradient";
 import Constants from "expo-constants";
@@ -46,6 +47,13 @@ const StackNavigator = () => {
       <Screen
         name="Type"
         component={Type}
+        options={{
+          header: ({ navigation }) => <Header {...navigation} />,
+        }}
+      />
+      <Screen
+        name="Configuration"
+        component={Configuration}
         options={{
           header: ({ navigation }) => <Header {...navigation} />,
         }}
