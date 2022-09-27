@@ -2,22 +2,23 @@ import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { navigationProps } from "../../utilities/types";
+import { connectToRedisServer } from "../../utilities/controler";
+import { navigationPropsConfigOven } from "../../utilities/types";
 
-
-const Forward: React.FC<navigationProps> = ({ goTo, navigation }) => {
+const ConfigOven: React.FC<navigationPropsConfigOven> = ({ navigation }) => {
   const goToNextPage = () => {
-    if (goTo === "CONFIGIGURATION") {
-      navigation.navigate("Configuration");
-    }
-    if (goTo==="COFIGURAR_FORNO"){
-      navigation.navigate("OvenConfiguration");
-    }
+    // if (goTo === "CONFIGIGURATION") {
+    //   navigation.navigate("Configuration");
+    // }
+    // if (goTo==="COFIGURAR_FORNO"){
+    //   navigation.navigate("OvenConfiguration");
+    // }
+    connectToRedisServer();
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.txtBtn}>Prosseguir</Text>
+      <Text style={styles.txtBtn}>Configurar Forno</Text>
       <TouchableOpacity onPress={goToNextPage}>
         <LinearGradient
           colors={["#42C3A1", "#fff"]}
@@ -37,7 +38,7 @@ const Forward: React.FC<navigationProps> = ({ goTo, navigation }) => {
   );
 };
 
-export default Forward;
+export default ConfigOven;
 
 const styles = StyleSheet.create({
   container: {

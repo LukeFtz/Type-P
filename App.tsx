@@ -6,6 +6,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./screens/Home";
 import Type from "./screens/Type";
 import Configuration from "./screens/Configuration";
+import OvenConfiguration from "./screens/OvenConfiguration";
 import { RootStackParamList } from "./utilities/types";
 import { LinearGradient } from "expo-linear-gradient";
 import Constants from "expo-constants";
@@ -54,6 +55,13 @@ const StackNavigator = () => {
       <Screen
         name="Configuration"
         component={Configuration}
+        options={{
+          header: ({ navigation }) => <Header {...navigation} />,
+        }}
+      />
+      <Screen
+        name="OvenConfiguration"
+        component={OvenConfiguration}
         options={{
           header: ({ navigation }) => <Header {...navigation} />,
         }}
