@@ -1,59 +1,39 @@
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-// import { connectToRedisServer } from "../../utilities/controler";
+import {
+  connectToRedisServer,
+  defineSettings,
+  getToken,
+} from "../../utilities/controler";
 import { navigationPropsConfigOven } from "../../utilities/types";
 
-// import { io } from "socket.io-client";
-// import TcpSocket from "react-native-tcp-socket";
-
 const ConfigOven: React.FC<navigationPropsConfigOven> = ({ navigation }) => {
-  // const socket = io("ws://192.168.0.113:8000/ws/redis/");
-  const websocket = new WebSocket("ws://192.168.0.113:8000/ws/redis/");
+  const [disableButton, setDisableButton] = useState<boolean>(false);
+  let websocket: WebSocket;
 
-  const goToNextPage = () => {
-    // if (goTo === "CONFIGIGURATION") {
-    //   navigation.navigate("Configuration");
-    // }
-    // if (goTo==="COFIGURAR_FORNO"){
-    //   navigation.navigate("OvenConfiguration");
-    // }
-    // connectToRedisServer();
+  const goToNextPage = async () => {
+    setDisableButton(true);
+    let token: string;
+    websocket = connectToRedisServer();
+    getToken();
+    websocket.onmessage = (e) => {
+      const message = JSON.parse(e.data);
+      console.log(message);
+      if (message.func === "TOKEN") {
+        token = message.token;
+        defineSettings(token);
+      } else if (message.func === "OVEN_SETTED" && message.token) {
+        navigation.navigate("Heat");
+      }
+    };
   };
-
-  useEffect(() => {
-    websocket.addEventListener("message", (e) => {
-      console.log(e);
-    });
-    // websocket.onclose = (e) => {
-    //   // 連接被關閉了
-    //   console.log("onclose", e.code, e.reason);
-    // };
-    // const options = {
-    //   port: 8000,
-    //   host: "127.0.0.1",
-    //   localAddress: "127.0.0.1",
-    //   reuseAddress: true,
-    //   // localPort: 20000,
-    //   // interface: "wifi",
-    // };
-    // // Create socket
-    // const client = TcpSocket.createConnection(options, () => {
-    //   // Write on the socket
-    //   client.write("Hello server!");
-    //   // Close socket
-    //   client.destroy();
-    // });
-    // client.on("data", function (data) {
-    //   console.log("message was received", data);
-    // });
-  }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.txtBtn}>Configurar Forno</Text>
-      <TouchableOpacity onPress={goToNextPage}>
+      <TouchableOpacity onPress={goToNextPage} disabled={disableButton}>
         <LinearGradient
           colors={["#42C3A1", "#fff"]}
           style={styles.btnBorderView}

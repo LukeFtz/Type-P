@@ -1,23 +1,41 @@
-// const ws = new WebSocket("ws://127.0.0.1:8000/ws/redis/");
+import { communication } from "./types";
+import { defineOvenSettings, getTempStored, heatOven } from "./functions";
 
-// export const connectToRedisServer = async () => {
-//   console.log("asdas");
-//   ws.onopen = () => {
-//     // connection opened
-//     ws.send("something"); // send a message
-//   };
-//   ws.onmessage = (e) => {
-//     // a message was received
-//     console.log(e.data);
-//   };
-// };
+let websocket: WebSocket;
+let token: string;
 
-// ws.onerror = (e) => {
-//   // an error occurred
-//   // console.log(e.message);
-// };
+export const connectToRedisServer = () => {
+  websocket = new WebSocket("ws://192.168.0.113:8000/ws/redis/");
+  return websocket;
+};
 
-// ws.onclose = (e) => {
-//   // connection closed
-//   console.log(e.code, e.reason);
-// };
+export const getToken = () => {
+  const sendData = {
+    func: "GEN_TOKEN",
+  };
+  try {
+    websocket.onopen = () => {
+      websocket.send(JSON.stringify(sendData));
+      return Promise.resolve(true);
+    };
+  } catch (e) {
+    return Promise.resolve(false);
+  }
+};
+
+export const getWebSocket = () => {
+  return websocket;
+};
+
+export const defineSettings = (tokenDefined: string) => {
+  token = tokenDefined;
+  defineOvenSettings(websocket, tokenDefined);
+};
+
+export const startHeatting = () => {
+  heatOven(websocket, token);
+};
+
+export const getTemp = async () => {
+  return await getTempStored();
+};

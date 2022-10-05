@@ -7,6 +7,8 @@ import Home from "./screens/Home";
 import Type from "./screens/Type";
 import Configuration from "./screens/Configuration";
 import OvenConfiguration from "./screens/OvenConfiguration";
+import Heat from "./screens/Heat";
+import Recycle from "./screens/Recycle";
 import { RootStackParamList } from "./utilities/types";
 import { LinearGradient } from "expo-linear-gradient";
 import Constants from "expo-constants";
@@ -62,6 +64,20 @@ const StackNavigator = () => {
       <Screen
         name="OvenConfiguration"
         component={OvenConfiguration}
+        options={{
+          header: ({ navigation }) => <Header {...navigation} />,
+        }}
+      />
+      <Screen
+        name="Heat"
+        component={Heat}
+        options={{
+          header: ({ navigation }) => <Header {...navigation} />,
+        }}
+      />
+      <Screen
+        name="Recycle"
+        component={Recycle}
         options={{
           header: ({ navigation }) => <Header {...navigation} />,
         }}

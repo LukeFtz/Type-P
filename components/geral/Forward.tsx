@@ -3,15 +3,34 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { navigationProps } from "../../utilities/types";
+import { setItemAsync } from "expo-secure-store";
 
+const Forward: React.FC<navigationProps> = ({
+  goTo,
+  navigation,
+  tempo,
+  temperatura,
+}) => {
+  const saveInfo = () => {
+    const storage = {
+      tempo: tempo,
+      temperatura: temperatura,
+    };
+    setItemAsync("storage", JSON.stringify(storage))
+      .then(() => {
+        navigation.navigate("OvenConfiguration");
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
-const Forward: React.FC<navigationProps> = ({ goTo, navigation }) => {
   const goToNextPage = () => {
     if (goTo === "CONFIGIGURATION") {
       navigation.navigate("Configuration");
     }
-    if (goTo==="COFIGURAR_FORNO"){
-      navigation.navigate("OvenConfiguration");
+    if (goTo === "COFIGURAR_FORNO") {
+      saveInfo();
     }
   };
 
