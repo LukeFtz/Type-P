@@ -16,14 +16,14 @@ const HeatInfo: React.FC<InScreen> = ({ apperInScreen }) => {
     const aux: number = await getTemp();
     setTempDef(aux);
   };
-  const onSocketMessage = () => {
-    websocket.onmessage = (e) => {
-      console.log(e);
-      const message: communication = JSON.parse(e.data);
-      if (message.func === "OVEN_TEMP" && message.val && message.token) {
-        setCurrentTemp(message.val);
-      }
-    };
+  const onSocketMessage = (e: MessageEvent) => {
+    // websocket.onmessage = (e) => {
+    console.log(e);
+    const message: communication = JSON.parse(e.data);
+    if (message.func === "OVEN_TEMP" && message.val && message.token) {
+      setCurrentTemp(message.val);
+    }
+    // };
   };
 
   const temporaryFunc = () => {
@@ -46,7 +46,9 @@ const HeatInfo: React.FC<InScreen> = ({ apperInScreen }) => {
   useEffect(() => {
     websocket = getWebSocket();
     getTempt();
-    onSocketMessage();
+    websocket.addEventListener("message", (e) => onSocketMessage(e));
+
+    return websocket.removeEventListener("message", (e) => onSocketMessage(e));
   }, []);
 
   return (

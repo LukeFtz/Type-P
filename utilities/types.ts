@@ -27,7 +27,7 @@ export interface InScreen {
 }
 
 export interface communication {
-  func: "STRT_HEAT" | "OVEN_TEMP";
+  func: "STRT_HEAT" | "OVEN_TEMP" | "STRT_RECYCLE";
   val?: string | number;
   token: string;
 }

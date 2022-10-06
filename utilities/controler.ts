@@ -1,5 +1,10 @@
-import { communication } from "./types";
-import { defineOvenSettings, getTempStored, heatOven } from "./functions";
+import {
+  defineOvenSettings,
+  getTempStored,
+  getTimeStored,
+  heatOven,
+  ovenStartRecycle,
+} from "./functions";
 
 let websocket: WebSocket;
 let token: string;
@@ -36,6 +41,14 @@ export const startHeatting = () => {
   heatOven(websocket, token);
 };
 
+export const startRecycle = () => {
+  ovenStartRecycle(websocket, token);
+};
+
 export const getTemp = async () => {
   return await getTempStored();
+};
+
+export const getTime = async () => {
+  return await getTimeStored();
 };
