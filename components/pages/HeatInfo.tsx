@@ -1,15 +1,17 @@
+import { BlurView } from "expo-blur";
 import React, { useEffect, useState } from "react";
-import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { Dimensions, Modal, StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { getTemp, getWebSocket } from "../../utilities/controler";
 import { communication, InScreen } from "../../utilities/types";
 
-const { height } = Dimensions.get("screen");
+const { height, width } = Dimensions.get("screen");
 let websocket: WebSocket;
 
 const HeatInfo: React.FC<InScreen> = ({ apperInScreen }) => {
   const [currentTemp, setCurrentTemp] = useState<number | string>(100);
   const [tempDef, setTempDef] = useState<number>(0);
+  const [modalVisible, setModalVisible] = useState(false);
   let temporaryIndex = true;
 
   const getTempt = async () => {
@@ -53,9 +55,42 @@ const HeatInfo: React.FC<InScreen> = ({ apperInScreen }) => {
 
   return (
     <View style={styles.container}>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <BlurView intensity={30} tint="dark" style={styles.blurContainer}>
+          <View style={styles.viewModalContent}>
+            <Text style={styles.txtModalBold}>
+              Interromper o processo agora pode afetar o processo de reciclagem!
+            </Text>
+            <Text style={styles.txtModalQuest}>
+              Realmente deseja continuar?
+            </Text>
+            <View style={styles.rowDirection}>
+              <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
+                <View style={styles.btnModalNo}>
+                  <Text style={styles.txtBtnModal}>Não</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <View style={styles.btnModalYes}>
+                  <Text style={styles.txtBtnModal}>Sim</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </BlurView>
+      </Modal>
       <View style={styles.viewMainConten}>
         <View style={styles.centerObj}>
-          <Text style={styles.txtLabel}>Temperatura Atual</Text>
+          <Text style={styles.txtLabel} onPress={temporaryFunc}>
+            Temperatura Atual
+          </Text>
           <Text style={styles.txtCurrentTemp}>{currentTemp}°</Text>
           <View style={styles.viewTempDef}>
             <Text style={styles.txtLabel}>Temperatura Definida </Text>
@@ -63,7 +98,7 @@ const HeatInfo: React.FC<InScreen> = ({ apperInScreen }) => {
           </View>
         </View>
         <View>
-          <TouchableOpacity onPress={temporaryFunc}>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
             <View style={styles.btnCancel}>
               <Text style={styles.txtBtnCancel}>Cancelar</Text>
             </View>
@@ -84,6 +119,51 @@ const styles = StyleSheet.create({
   },
   centerObj: {
     alignItems: "center",
+  },
+  blurContainer: {
+    flex: 1,
+    padding: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  viewModalContent: {
+    width: width * 0.9,
+    // height: height * 0.25,
+    padding: 10,
+    paddingHorizontal: 30,
+    backgroundColor: "#fff",
+  },
+  txtModalBold: {
+    color: "#000",
+    fontFamily: "ZenBold",
+    fontSize: 20,
+    textAlign: "center",
+  },
+  rowDirection: {
+    marginVertical: 5,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  txtModalQuest: {
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: "#000",
+    fontSize: 20,
+    fontFamily: "ZenLight",
+    textAlign: "center",
+  },
+  btnModalNo: {
+    backgroundColor: "#17AE86",
+  },
+  btnModalYes: {
+    backgroundColor: "#AE1717",
+  },
+  txtBtnModal: {
+    color: "#fff",
+    fontFamily: "ZenLight",
+    fontSize: 20,
+    paddingHorizontal: 30,
+    paddingVertical: 5,
   },
   viewMainConten: {
     height: height * 0.7,
