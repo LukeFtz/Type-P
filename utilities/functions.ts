@@ -46,3 +46,8 @@ export const ovenStartRecycle = (websocket: WebSocket, token: string) => {
   const socketData: communication = { func: "STRT_RECYCLE", token };
   websocket.send(JSON.stringify(socketData));
 };
+
+export const cancelProcess = (websocket: WebSocket, token: string) => {
+  const socketData: communication = { func: "CANCEL", token };
+  websocket.send(JSON.stringify(socketData));
+};

@@ -1,9 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { Dimensions, Modal, StyleSheet, Text, View } from "react-native";
 import { communication, InScreen } from "../../utilities/types";
-import { getTime, getWebSocket } from "../../utilities/controler";
+import {
+  cancelCurrentProcess,
+  getTime,
+  getWebSocket,
+} from "../../utilities/controler";
 import RecycleProcess from "../custom/RecycleProcess";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { BlurView } from "expo-blur";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 // import { Container } from './styles';
 const { width } = Dimensions.get("screen");
@@ -13,6 +24,8 @@ const RecicleInfo: React.FC<InScreen> = ({ apperInScreen }) => {
   const [timeDef, setTimeDef] = useState<string>("");
   const [currentTemp, setCurrentTemp] = useState<number | string>(100);
   let temporaryIndex = true;
+  const [modalVisible, setModalVisible] = useState(false);
+  const opacity = useSharedValue<number>(1);
 
   const getTimeDef = async () => {
     const aux: string = await getTime();
@@ -26,6 +39,23 @@ const RecicleInfo: React.FC<InScreen> = ({ apperInScreen }) => {
       setCurrentTemp(message.val);
     }
   };
+
+  const animatedStyles = useAnimatedStyle(() => {
+    return {
+      opacity: withTiming(opacity.value, {
+        duration: 500,
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+      }),
+    };
+  });
+
+  useEffect(() => {
+    if (!apperInScreen) {
+      opacity.value = 0;
+    } else {
+      opacity.value = 1;
+    }
+  }, [apperInScreen]);
 
   useEffect(() => {
     websocket = getWebSocket();
@@ -46,8 +76,44 @@ const RecicleInfo: React.FC<InScreen> = ({ apperInScreen }) => {
     }
   };
 
+  const cancelProcess = () => {
+    cancelCurrentProcess();
+    setModalVisible(!modalVisible);
+  };
+
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, animatedStyles]}>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <BlurView intensity={30} tint="dark" style={styles.blurContainer}>
+          <View style={styles.viewModalContent}>
+            <Text style={styles.txtModalBold}>
+              Interromper o processo agora pode afetar o processo de reciclagem!
+            </Text>
+            <Text style={styles.txtModalQuest}>
+              Realmente deseja continuar?
+            </Text>
+            <View style={styles.rowDirection}>
+              <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
+                <View style={styles.btnModalNo}>
+                  <Text style={styles.txtBtnModal}>Não</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => cancelProcess()}>
+                <View style={styles.btnModalYes}>
+                  <Text style={styles.txtBtnModal}>Sim</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </BlurView>
+      </Modal>
       {/* <View style={styles.spacingContent}> */}
       <View style={styles.centerialize}>
         <View style={styles.viewText}>
@@ -63,17 +129,19 @@ const RecicleInfo: React.FC<InScreen> = ({ apperInScreen }) => {
         <RecycleProcess timeDefined={30} />
       </View>
       <View style={styles.centerialize}>
-        <Text style={styles.txtLabelTemp}>{currentTemp}°</Text>
+        <Text style={styles.txtLabelTemp} onPress={temporaryFunc}>
+          {currentTemp}°
+        </Text>
       </View>
       <View style={styles.viewBtnCancel}>
-        <TouchableOpacity onPress={temporaryFunc}>
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
           <View style={styles.btnCancel}>
             <Text style={styles.txtBtnCancel}>Cancelar</Text>
           </View>
         </TouchableOpacity>
       </View>
       {/* </View> */}
-    </View>
+    </Animated.View>
   );
 };
 
@@ -127,5 +195,50 @@ const styles = StyleSheet.create({
   },
   viewBtnCancel: {
     width: width * 0.9,
+  },
+  blurContainer: {
+    flex: 1,
+    padding: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  viewModalContent: {
+    width: width * 0.9,
+    // height: height * 0.25,
+    padding: 10,
+    paddingHorizontal: 30,
+    backgroundColor: "#fff",
+  },
+  txtModalBold: {
+    color: "#000",
+    fontFamily: "ZenBold",
+    fontSize: 20,
+    textAlign: "center",
+  },
+  rowDirection: {
+    marginVertical: 5,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  txtModalQuest: {
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: "#000",
+    fontSize: 20,
+    fontFamily: "ZenLight",
+    textAlign: "center",
+  },
+  btnModalNo: {
+    backgroundColor: "#17AE86",
+  },
+  btnModalYes: {
+    backgroundColor: "#AE1717",
+  },
+  txtBtnModal: {
+    color: "#fff",
+    fontFamily: "ZenLight",
+    fontSize: 20,
+    paddingHorizontal: 30,
+    paddingVertical: 5,
   },
 });

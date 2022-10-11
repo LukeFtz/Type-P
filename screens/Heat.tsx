@@ -22,13 +22,20 @@ const Heat: React.FC<screenNavigationProp> = ({ navigation }) => {
       console.log(message);
       if (message.func === "OVEN_HEATING" && message.token) {
         setShowBtn(false);
+        setInfoOnScreen(true);
         setTimeout(() => {
-          setBtnOnScreen(false);
-          setInfoOnScreen(true);
           setShowInfo(true);
+          setBtnOnScreen(false);
         }, 500);
       } else if (message.func === "HEAT_COMPLETE" && message.token) {
         navigation.navigate("Recycle");
+      } else if (message.func === "PROCESS_CANCELED" && message.token) {
+        setInfoOnScreen(false);
+        setBtnOnScreen(true);
+        setTimeout(() => {
+          setShowBtn(true);
+          setShowInfo(false);
+        }, 500);
       }
     };
   }, []);

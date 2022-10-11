@@ -4,6 +4,8 @@ export type RootStackParamList = {
   Home: undefined;
   Type: undefined;
   Configuration: undefined;
+  WifiConfigurations: undefined;
+  SelectWifi: undefined;
   OvenConection: undefined;
   OvenConfiguration: undefined;
   Heat: undefined;
@@ -11,7 +13,11 @@ export type RootStackParamList = {
 };
 
 export type navigationProps = {
-  goTo: "CONFIGIGURATION" | "COFIGURAR_FORNO";
+  goTo:
+    | "CONFIGIGURATION"
+    | "COFIGURAR_FORNO"
+    | "CONFIGURATE_WIFI"
+    | "SELECT_WIFI";
   tempo?: string;
   temperatura?: number;
 } & StackScreenProps<RootStackParamList>;
@@ -27,7 +33,7 @@ export interface InScreen {
 }
 
 export interface communication {
-  func: "STRT_HEAT" | "OVEN_TEMP" | "STRT_RECYCLE";
+  func: "STRT_HEAT" | "OVEN_TEMP" | "STRT_RECYCLE" | "CANCEL";
   val?: string | number;
   token: string;
 }
@@ -35,4 +41,14 @@ export interface communication {
 export interface storageitems {
   tempo: string;
   temperatura: number;
+}
+
+export interface showModal {
+  modalShow: boolean;
+}
+
+export interface valuesNumbers {
+  uni: string;
+  dec: string;
+  cen: string;
 }

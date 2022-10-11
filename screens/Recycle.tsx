@@ -22,12 +22,19 @@ const Recycle: React.FC<screenNavigationProp> = ({ navigation }) => {
     if (message.func === "OVEN_RECYCLING" && message.token) {
       setShowBtn(false);
       setTimeout(() => {
-        setBtnOnScreen(false);
         setInfoOnScreen(true);
+        setBtnOnScreen(false);
         setShowInfo(true);
       }, 500);
     } else if (message.func === "HEAT_COMPLETE" && message.token) {
       navigation.navigate("Recycle");
+    } else if (message.func === "PROCESS_CANCELED" && message.token) {
+      setInfoOnScreen(false);
+      setBtnOnScreen(true);
+      setTimeout(() => {
+        setShowBtn(true);
+        setShowInfo(false);
+      }, 500);
     }
     // };
   };
@@ -44,7 +51,7 @@ const Recycle: React.FC<screenNavigationProp> = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.upperContend}>
         {btnOnScreen && <BtnRecycle apperInScreen={showBtn} />}
-        {showInfo && <RecycleInfo apperInScreen={infoOnScreen} />}
+        {infoOnScreen && <RecycleInfo apperInScreen={showInfo} />}
       </View>
       <View style={styles.lowerContend}>
         <View style={styles.logoView}>

@@ -1,8 +1,14 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text, Dimensions } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import Forward from "../components/geral/Forward";
-import { RootStackParamList } from "../utilities/types";
+import Edit from "../components/icons/Edit";
+import Verified from "../components/icons/Verified";
+import { RootStackParamList, valuesNumbers } from "../utilities/types";
+import { Picker } from "@react-native-picker/picker";
+import { getValues } from "../utilities/values";
+import { defineValue } from "../utilities/controler";
 
 type screenNavigationProp = StackScreenProps<
   RootStackParamList,
@@ -10,20 +16,75 @@ type screenNavigationProp = StackScreenProps<
 >;
 
 const { width } = Dimensions.get("screen");
+const NUMBERS = getValues();
 
 const Configuration: React.FC<screenNavigationProp> = (navigationProps) => {
-  const [tempo, setTempo] = useState<string>("00:00");
+  const [tempo, setTempo] = useState<string>("00:01");
   const [temperatura, setTemperatura] = useState<number>(200);
   const [quantidade, setQuantidade] = useState<number>(10);
+
+  const [uniQnt, setUniQnt] = useState<number>(0);
+  const [decQnt, setDecQnt] = useState<number>(0);
+  const [cenQnt, setCenQnt] = useState<number>(0);
+
+  useEffect(() => {
+    const auxQnt: valuesNumbers = {
+      cen: cenQnt + "",
+      dec: decQnt + "",
+      uni: uniQnt + "",
+    };
+    // const auxFinalQnt = defineValue(auxQnt);
+    setQuantidade(10);
+  }, [cenQnt, decQnt, uniQnt]);
 
   return (
     <View style={[styles.container, styles.spacingItems]}>
       <Text style={styles.textTitle}>Configurações Gerais</Text>
       <View style={styles.itemQnt}>
-        <View style={[styles.defineRow, styles.defineQntRow]}>
-          <Text style={styles.txtMainQnt}>{quantidade}</Text>
-          <Text style={styles.txtMainQntG}>g</Text>
+        <View style={[styles.defineRow]}>
+          <View style={[styles.defineRow, styles.defineCenterRow]}>
+            <View style={styles.iconVerified}>
+              <Verified />
+            </View>
+            <View style={[styles.defineRow, styles.defineQntRow]}>
+              <Text style={styles.txtMainQnt}>{quantidade}</Text>
+              <Text style={styles.txtMainQntG}>g</Text>
+              <TouchableOpacity style={styles.btnEdit}>
+                <Edit />
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
+        {/* <View style={styles.defineRow}>
+          <Picker
+            selectedValue={cenQnt}
+            onValueChange={(itemValue) => setCenQnt(itemValue)}
+            style={{ width: 100, height: 200 }}
+          >
+            {NUMBERS.map((item, index) => (
+              <Picker.Item key={index} label={item + ""} value={item} />
+            ))}
+          </Picker>
+
+          <Picker
+            selectedValue={decQnt}
+            onValueChange={(itemValue) => setDecQnt(itemValue)}
+            style={{ width: 100, height: 200 }}
+          >
+            {NUMBERS.map((item, index) => (
+              <Picker.Item key={index} label={item + ""} value={item} />
+            ))}
+          </Picker>
+          <Picker
+            selectedValue={uniQnt}
+            onValueChange={(itemValue) => setUniQnt(itemValue)}
+            style={{ width: 100, height: 200 }}
+          >
+            {NUMBERS.map((item, index) => (
+              <Picker.Item key={index} label={item + ""} value={item} />
+            ))}
+          </Picker>
+        </View> */}
         <Text style={styles.textTitle}>Quantidade</Text>
       </View>
       <View style={[styles.defineRow, styles.itemsRowSpacing]}>
@@ -44,7 +105,7 @@ const Configuration: React.FC<screenNavigationProp> = (navigationProps) => {
       </View>
       <View style={styles.fullWidth}>
         <Forward
-          goTo="COFIGURAR_FORNO"
+          goTo="CONFIGURATE_WIFI"
           temperatura={temperatura}
           tempo={tempo}
           {...navigationProps}
@@ -80,6 +141,12 @@ const styles = StyleSheet.create({
   defineTempRow: {
     alignItems: "flex-start",
   },
+  defineCenterRow: {
+    alignItems: "center",
+  },
+  iconVerified: {
+    marginRight: 10,
+  },
   defineRow: {
     flexDirection: "row",
   },
@@ -114,5 +181,9 @@ const styles = StyleSheet.create({
     width,
     alignItems: "flex-end",
     marginRight: 50,
+  },
+  btnEdit: {
+    marginBottom: 15,
+    marginLeft: 15,
   },
 });

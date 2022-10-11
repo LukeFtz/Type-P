@@ -2,7 +2,17 @@ import { BlurView } from "expo-blur";
 import React, { useEffect, useState } from "react";
 import { Dimensions, Modal, StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { getTemp, getWebSocket } from "../../utilities/controler";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import {
+  cancelCurrentProcess,
+  getTemp,
+  getWebSocket,
+} from "../../utilities/controler";
 import { communication, InScreen } from "../../utilities/types";
 
 const { height, width } = Dimensions.get("screen");
@@ -13,6 +23,7 @@ const HeatInfo: React.FC<InScreen> = ({ apperInScreen }) => {
   const [tempDef, setTempDef] = useState<number>(0);
   const [modalVisible, setModalVisible] = useState(false);
   let temporaryIndex = true;
+  const opacity = useSharedValue<number>(1);
 
   const getTempt = async () => {
     const aux: number = await getTemp();
@@ -45,13 +56,34 @@ const HeatInfo: React.FC<InScreen> = ({ apperInScreen }) => {
     }
   };
 
+  const animatedStyles = useAnimatedStyle(() => {
+    return {
+      opacity: withTiming(opacity.value, {
+        duration: 500,
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+      }),
+    };
+  });
+
+  useEffect(() => {
+    if (!apperInScreen) {
+      opacity.value = 0;
+    } else {
+      opacity.value = 1;
+    }
+  }, [apperInScreen]);
+
   useEffect(() => {
     websocket = getWebSocket();
     getTempt();
     websocket.addEventListener("message", (e) => onSocketMessage(e));
-
     return websocket.removeEventListener("message", (e) => onSocketMessage(e));
   }, []);
+
+  const cancelProcess = () => {
+    cancelCurrentProcess();
+    setModalVisible(!modalVisible);
+  };
 
   return (
     <View style={styles.container}>
@@ -77,7 +109,7 @@ const HeatInfo: React.FC<InScreen> = ({ apperInScreen }) => {
                   <Text style={styles.txtBtnModal}>Não</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => cancelProcess()}>
                 <View style={styles.btnModalYes}>
                   <Text style={styles.txtBtnModal}>Sim</Text>
                 </View>
@@ -86,7 +118,7 @@ const HeatInfo: React.FC<InScreen> = ({ apperInScreen }) => {
           </View>
         </BlurView>
       </Modal>
-      <View style={styles.viewMainConten}>
+      <Animated.View style={[styles.viewMainConten, animatedStyles]}>
         <View style={styles.centerObj}>
           <Text style={styles.txtLabel} onPress={temporaryFunc}>
             Temperatura Atual
@@ -104,7 +136,7 @@ const HeatInfo: React.FC<InScreen> = ({ apperInScreen }) => {
             </View>
           </TouchableOpacity>
         </View>
-      </View>
+      </Animated.View>
     </View>
   );
 };

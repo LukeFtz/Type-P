@@ -1,10 +1,13 @@
 import {
+  cancelProcess,
   defineOvenSettings,
   getTempStored,
   getTimeStored,
   heatOven,
   ovenStartRecycle,
 } from "./functions";
+import { valuesNumbers } from "./types";
+import { setValueNumbers } from "./values";
 
 let websocket: WebSocket;
 let token: string;
@@ -51,4 +54,12 @@ export const getTemp = async () => {
 
 export const getTime = async () => {
   return await getTimeStored();
+};
+
+export const cancelCurrentProcess = () => {
+  cancelProcess(websocket, token);
+};
+
+export const defineValue = (props: valuesNumbers) => {
+  return setValueNumbers(props);
 };

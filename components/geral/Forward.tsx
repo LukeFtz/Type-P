@@ -29,6 +29,12 @@ const Forward: React.FC<navigationProps> = ({
     if (goTo === "CONFIGIGURATION") {
       navigation.navigate("Configuration");
     }
+    if (goTo === "CONFIGURATE_WIFI") {
+      navigation.navigate("WifiConfigurations");
+    }
+    if (goTo === "SELECT_WIFI") {
+      navigation.navigate("SelectWifi");
+    }
     if (goTo === "COFIGURAR_FORNO") {
       saveInfo();
     }

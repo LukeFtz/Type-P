@@ -27,6 +27,8 @@ const BtnHeat: React.FC<InScreen> = ({ apperInScreen }) => {
   useEffect(() => {
     if (!apperInScreen) {
       opacity.value = 0;
+    } else {
+      opacity.value = 1;
     }
   }, [apperInScreen]);
 

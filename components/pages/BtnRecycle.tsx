@@ -15,6 +15,13 @@ const { width } = Dimensions.get("screen");
 const BtnRecycle: React.FC<InScreen> = ({ apperInScreen }) => {
   const opacity = useSharedValue<number>(1);
 
+  useEffect(() => {
+    if (!apperInScreen) {
+      opacity.value = 0;
+    } else {
+      opacity.value = 1;
+    }
+  }, [apperInScreen]);
   const animatedStyles = useAnimatedStyle(() => {
     return {
       opacity: withTiming(opacity.value, {
@@ -23,12 +30,6 @@ const BtnRecycle: React.FC<InScreen> = ({ apperInScreen }) => {
       }),
     };
   });
-
-  useEffect(() => {
-    if (!apperInScreen) {
-      opacity.value = 0;
-    }
-  }, [apperInScreen]);
 
   return (
     <Animated.View style={[styles.container, animatedStyles]}>
