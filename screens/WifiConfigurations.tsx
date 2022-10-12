@@ -6,8 +6,13 @@ import WaitingConnetion from "../components/custom/WaitingConnetion";
 import Forward from "../components/geral/Forward";
 import Wifi from "../components/icons/Wifi";
 import { RootStackParamList } from "../utilities/types";
-import NetInfo, { NetInfoStateType } from "@react-native-community/netinfo";
+import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
 import { OVEN_SERVER } from "../utilities/values";
+import {
+  connectToRedisServer,
+  getToken,
+  setToken,
+} from "../utilities/controler";
 
 // import { Container } from './styles';
 type screenNavigationProp = StackScreenProps<
@@ -15,22 +20,59 @@ type screenNavigationProp = StackScreenProps<
   "WifiConfigurations"
 >;
 
-const { height } = Dimensions.get("screen");
+const { width, height } = Dimensions.get("screen");
+let token: string;
 
 const WifiCOnfigurations: React.FC<screenNavigationProp> = (
   navigationProps
 ) => {
+  const netInfo = useNetInfo();
   const [connected, setConnected] = useState<boolean>(false);
   const [showWaiting, setShowWaiting] = useState<boolean>(true);
   const [showConnected, setShowConnected] = useState<boolean>(false);
+  const [text, setText] = useState<string>("");
+  // const [token, setToken] = useState<string>("");
+  let websocket: WebSocket;
+
+  const setOvenToken = () => {
+    const postContent = {
+      method: "POST",
+      headers: {
+        // Accept: "application/json",
+        // "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      // body: JSON.stringify({
+      //   token: token,
+      // }),
+    };
+
+    fetch(OVEN_SERVER + "/token" + "?token=" + token + "", postContent)
+      .then((response) => response.json())
+      .then((json) => {
+        if (json.token_paried === true) {
+          setConnected(true);
+        } else {
+          setOvenToken();
+        }
+      })
+      .catch((e) => {
+        setOvenToken();
+      });
+  };
 
   const getConnectionInfo = () => {
     fetch(OVEN_SERVER + "/")
       .then((response) => response.json())
       .then((json) => {
         if (json.typep === true) {
-          setConnected(true);
+          setText("");
+          setOvenToken();
         }
+      })
+      .catch((e) => {
+        setText("Seleciona a rede correta");
+        setConnected(false);
       });
   };
 
@@ -45,19 +87,22 @@ const WifiCOnfigurations: React.FC<screenNavigationProp> = (
   }, [connected]);
 
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      console.log("Connection type", state.type);
-      console.log("Is connected?", state.isConnected);
-      if (state.type === NetInfoStateType.wifi) {
-        console.log("Is connected?", state.details);
-        if (state.details.ssid === "Type-P") {
-          console.log("Connected to Type-P");
-          getConnectionInfo();
-        }
+    websocket = connectToRedisServer();
+    getToken();
+    websocket.onmessage = (e) => {
+      const message = JSON.parse(e.data);
+      if (message.func === "TOKEN") {
+        // setToken(message.token);
+        token = message.token;
+        console.log(token);
+        setToken(message.token);
       }
-    });
-    return unsubscribe();
+    };
   }, []);
+
+  useEffect(() => {
+    getConnectionInfo();
+  }, [netInfo, netInfo.isConnected]);
 
   return (
     <View style={styles.container}>
@@ -76,12 +121,13 @@ const WifiCOnfigurations: React.FC<screenNavigationProp> = (
             </View>
           </View>
         </View>
+        <Text style={styles.txtLabelError}>{text}</Text>
       </View>
       <View style={styles.bottomView}>
         {showWaiting && <WaitingConnetion />}
         {showConnected && <Connected />}
       </View>
-      <View>
+      <View style={styles.fullWidth}>
         {showConnected && <Forward goTo="SELECT_WIFI" {...navigationProps} />}
       </View>
     </View>
@@ -107,6 +153,12 @@ const styles = StyleSheet.create({
     fontFamily: "ZenBold",
     fontSize: 20,
   },
+  txtLabelError: {
+    color: "#cf0404",
+    fontFamily: "ZenLight",
+    fontSize: 20,
+    textAlign: "center",
+  },
   row: {
     flexDirection: "row",
   },
@@ -120,5 +172,10 @@ const styles = StyleSheet.create({
   },
   viewWifiSettings: {
     marginLeft: 10,
+  },
+  fullWidth: {
+    width,
+    alignItems: "flex-end",
+    marginRight: 50,
   },
 });

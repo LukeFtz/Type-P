@@ -31,12 +31,16 @@ export const getToken = () => {
   }
 };
 
+export const setToken = (token: string) => {
+  token;
+};
+
 export const getWebSocket = () => {
   return websocket;
 };
 
 export const defineSettings = (tokenDefined: string) => {
-  token = tokenDefined;
+  // token = tokenDefined;
   defineOvenSettings(websocket, tokenDefined);
 };
 
