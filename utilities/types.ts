@@ -52,3 +52,9 @@ export interface valuesNumbers {
   dec: string;
   cen: string;
 }
+
+export interface wifiData {
+  ssid: string;
+  strength: number;
+  security: boolean;
+}

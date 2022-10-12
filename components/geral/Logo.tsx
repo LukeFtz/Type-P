@@ -1,7 +1,7 @@
 import * as React from "react";
 import Svg, { SvgProps, Path } from "react-native-svg";
 
-function Icon(props: SvgProps) {
+function Logo(props: SvgProps) {
   return (
     <Svg viewBox="0 0 191 214" {...props}>
       <Path
@@ -17,4 +17,4 @@ function Icon(props: SvgProps) {
   );
 }
 
-export default Icon;
+export default Logo;

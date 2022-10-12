@@ -31,20 +31,14 @@ const WifiCOnfigurations: React.FC<screenNavigationProp> = (
   const [showWaiting, setShowWaiting] = useState<boolean>(true);
   const [showConnected, setShowConnected] = useState<boolean>(false);
   const [text, setText] = useState<string>("");
-  // const [token, setToken] = useState<string>("");
   let websocket: WebSocket;
 
   const setOvenToken = () => {
     const postContent = {
       method: "POST",
       headers: {
-        // Accept: "application/json",
-        // "Content-Type": "application/json",
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      // body: JSON.stringify({
-      //   token: token,
-      // }),
     };
 
     fetch(OVEN_SERVER + "/token" + "?token=" + token + "", postContent)
@@ -129,6 +123,7 @@ const WifiCOnfigurations: React.FC<screenNavigationProp> = (
       </View>
       <View style={styles.fullWidth}>
         {showConnected && <Forward goTo="SELECT_WIFI" {...navigationProps} />}
+        {/* <Forward goTo="SELECT_WIFI" {...navigationProps} /> */}
       </View>
     </View>
   );
