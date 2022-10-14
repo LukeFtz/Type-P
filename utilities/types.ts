@@ -6,6 +6,7 @@ export type RootStackParamList = {
   Configuration: undefined;
   WifiConfigurations: undefined;
   SelectWifi: undefined;
+  StabilizingCommunication: { ssid: string };
   OvenConection: undefined;
   OvenConfiguration: undefined;
   Heat: undefined;

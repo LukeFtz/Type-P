@@ -1,3 +1,4 @@
+import { StackScreenProps } from "@react-navigation/stack";
 import { BlurView } from "expo-blur";
 import React, { useEffect, useState } from "react";
 import {
@@ -17,34 +18,23 @@ import {
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Logo from "../components/geral/Logo";
 import Wifi from "../components/icons/Wifi";
-import { wifiData } from "../utilities/types";
+import { RootStackParamList, wifiData } from "../utilities/types";
 import { OVEN_SERVER } from "../utilities/values";
 
 const { width, height } = Dimensions.get("screen");
 
-// const wifiAPs: wifiData[] = [
-//   { ssid: "CLARO_2GA6136C", strength: -84, security: true },
-//   { ssid: "FERNANDES_2.4", strength: -83, security: true },
-//   { ssid: "MATHEUS20_2G", strength: -90, security: true },
-//   { ssid: "Cakemel 2G", strength: -81, security: true },
-//   { ssid: "Elson", strength: -84, security: true },
-//   { ssid: "DANISE", strength: -89, security: true },
-//   { ssid: "CLARO_2GBCDE4F", strength: -85, security: true },
-//   { ssid: "NETcasa05", strength: -89, security: true },
-//   { ssid: "#NET-CLARO-WIFI", strength: -89, security: true },
-//   { ssid: "#NET-CLARO-WIFI", strength: -85, security: true },
-//   { ssid: "PRISSMA_FIBRA_2D90", strength: -55, security: true },
-//   { ssid: "Angel Mix Servico Social", strength: -70, security: true },
-// ];
+type screenNavigationProp = StackScreenProps<RootStackParamList, "SelectWifi">;
 
-const SelectWifi: React.FC = () => {
-  const [selectedWifi, setSelectedWifi] = useState<wifiData | null>(null);
+const auxData: wifiData = { security: false, ssid: "Home", strength: 100 };
+
+const SelectWifi: React.FC<screenNavigationProp> = ({ navigation }) => {
+  // const [selectedWifi, setSelectedWifi] = useState<wifiData | null>(null);
+  const [selectedWifi, setSelectedWifi] = useState<wifiData | null>(auxData);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [firstPass, setfirstPass] = useState<boolean>(true);
   const [password, setPassword] = useState<string>("");
   const [wifiAPs, setWifiAPs] = useState<wifiData[]>([]);
-  const [connected, setConnected] = useState<boolean>(false);
-  const [text, setText] = useState<string>("a");
+  const [errorText, setErrorText] = useState<string>("");
 
   const putWifiCredentials = (item: wifiData) => {
     setSelectedWifi(item);
@@ -69,13 +59,26 @@ const SelectWifi: React.FC = () => {
       .then((response) => response.json())
       .then((json) => {
         if (json.connected === true) {
-          setConnected(true);
+          setErrorText("");
+          if (selectedWifi?.ssid) {
+            navigation.navigate("StabilizingCommunication", {
+              ssid: selectedWifi.ssid,
+            });
+          }
         } else {
-          setText("Nao conectado");
+          if (json.status === "SSID_UNREACHABLE") {
+            setErrorText("Rede fora de alcance");
+          } else if (json.status === "CONNECTION_FAILED") {
+            setErrorText("Conexao falhou");
+          } else if (json.status === "WRONG_PASSWORD") {
+            setErrorText("Senha errada");
+          } else {
+            setErrorText("Ocorreu um erro");
+          }
         }
       })
       .catch((e) => {
-        setText("Algo deu errado");
+        setErrorText("Algo deu errado");
       });
   };
 
@@ -144,6 +147,7 @@ const SelectWifi: React.FC = () => {
                     onChangeText={(text) => setPassword(text)}
                   />
                 </View>
+                <Text style={styles.txtLabelError}>{errorText}</Text>
                 <TouchableOpacity
                   style={styles.btnScanWifi}
                   onPress={() => connectToWifi()}
@@ -162,26 +166,34 @@ const SelectWifi: React.FC = () => {
         <View style={[styles.row, styles.viewTopperContent]}>
           <Wifi />
           <View style={styles.viewScanWifi}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.btnScanWifi}
               onPress={() => getLocalAPs()}
+            >
+              <Text style={styles.textLabelWhite}>Scanear Redes</Text>
+            </TouchableOpacity> */}
+            <TouchableOpacity
+              style={styles.btnScanWifi}
+              onPress={() =>
+                navigation.navigate("StabilizingCommunication", {
+                  ssid: selectedWifi?.ssid + "",
+                })
+              }
             >
               <Text style={styles.textLabelWhite}>Scanear Redes</Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
-      {connected && <Text>Connected</Text>}
-      <Text>{text}</Text>
       <View style={styles.bottomView}>
+        {wifiAPs.length === 0 && !firstPass && (
+          <Text style={styles.textLabel}>Nenhuma rede encontrada</Text>
+        )}
         <FlatList
           data={wifiAPs}
           renderItem={renderItemWifi}
           keyExtractor={(_, index) => index + ""}
         />
-        {wifiAPs.length === 0 && !firstPass && (
-          <Text style={styles.textLabel}>Nenhuma rede encontrada</Text>
-        )}
       </View>
       <View style={{ width: 100, height: 110 }}>
         <Logo />
@@ -225,7 +237,7 @@ const styles = StyleSheet.create({
   txtLabelError: {
     color: "#cf0404",
     fontFamily: "ZenLight",
-    fontSize: 20,
+    fontSize: 16,
     textAlign: "center",
   },
   row: {

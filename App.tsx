@@ -8,6 +8,7 @@ import Type from "./screens/Type";
 import Configuration from "./screens/Configuration";
 import WifiConfigurations from "./screens/WifiConfigurations";
 import SelectWifi from "./screens/SelectWifi";
+import StabilizingCommunication from "./screens/StabilizingCommunication";
 import OvenConfiguration from "./screens/OvenConfiguration";
 import Heat from "./screens/Heat";
 import Recycle from "./screens/Recycle";
@@ -73,6 +74,13 @@ const StackNavigator = () => {
       <Screen
         name="SelectWifi"
         component={SelectWifi}
+        options={{
+          header: ({ navigation }) => <Header {...navigation} />,
+        }}
+      />
+      <Screen
+        name="StabilizingCommunication"
+        component={StabilizingCommunication}
         options={{
           header: ({ navigation }) => <Header {...navigation} />,
         }}

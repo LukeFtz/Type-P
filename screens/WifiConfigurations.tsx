@@ -122,8 +122,8 @@ const WifiCOnfigurations: React.FC<screenNavigationProp> = (
         {showConnected && <Connected />}
       </View>
       <View style={styles.fullWidth}>
-        {showConnected && <Forward goTo="SELECT_WIFI" {...navigationProps} />}
-        {/* <Forward goTo="SELECT_WIFI" {...navigationProps} /> */}
+        {/* {showConnected && <Forward goTo="SELECT_WIFI" {...navigationProps} />} */}
+        <Forward goTo="SELECT_WIFI" {...navigationProps} />
       </View>
     </View>
   );
