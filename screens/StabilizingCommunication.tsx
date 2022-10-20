@@ -1,7 +1,12 @@
+import { async } from "@firebase/util";
 import { StackScreenProps } from "@react-navigation/stack";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import Logo from "../components/geral/Logo";
+import {
+  connectAppToFirebase,
+  verifyOvenConnection,
+} from "../utilities/controler";
 import { RootStackParamList } from "../utilities/types";
 
 // import { Container } from './styles';
@@ -16,6 +21,19 @@ const StabilizingCommunication: React.FC<screenNavigationProp> = ({
   route,
   navigation,
 }) => {
+  const [ovenConnected, setOvenConnected] = useState<boolean>(false);
+  const [appConnected, setAppConnected] = useState<boolean>(false);
+
+  const getConnections = async () => {
+    const auxApp = await connectAppToFirebase();
+    setAppConnected(auxApp);
+    const auxOven = await verifyOvenConnection();
+    setOvenConnected(auxOven);
+  };
+
+  useEffect(() => {
+    getConnections();
+  }, []);
   return (
     <View style={styles.container}>
       <View style={styles.topView}>
@@ -23,6 +41,10 @@ const StabilizingCommunication: React.FC<screenNavigationProp> = ({
           <Text style={styles.textLabelApproved}>Conectado a </Text>
           <Text style={styles.txtLabelBold}>{route.params.ssid}</Text>
         </View>
+        {appConnected && (
+          <Text style={styles.textLabel}>Aplicativo conectado</Text>
+        )}
+        {ovenConnected && <Text style={styles.textLabel}>Forno conectado</Text>}
         <Text style={styles.textLabel}>Estabelecendo comunicação</Text>
         <View style={styles.viewLogo}>
           <Logo />

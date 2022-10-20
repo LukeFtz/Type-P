@@ -8,11 +8,6 @@ import Wifi from "../components/icons/Wifi";
 import { RootStackParamList } from "../utilities/types";
 import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
 import { OVEN_SERVER } from "../utilities/values";
-import {
-  connectToRedisServer,
-  getToken,
-  setToken,
-} from "../utilities/controler";
 
 // import { Container } from './styles';
 type screenNavigationProp = StackScreenProps<
@@ -31,7 +26,6 @@ const WifiCOnfigurations: React.FC<screenNavigationProp> = (
   const [showWaiting, setShowWaiting] = useState<boolean>(true);
   const [showConnected, setShowConnected] = useState<boolean>(false);
   const [text, setText] = useState<string>("");
-  let websocket: WebSocket;
 
   const setOvenToken = () => {
     const postContent = {
@@ -79,20 +73,6 @@ const WifiCOnfigurations: React.FC<screenNavigationProp> = (
       setShowConnected(false);
     }
   }, [connected]);
-
-  useEffect(() => {
-    websocket = connectToRedisServer();
-    getToken();
-    websocket.onmessage = (e) => {
-      const message = JSON.parse(e.data);
-      if (message.func === "TOKEN") {
-        // setToken(message.token);
-        token = message.token;
-        console.log(token);
-        setToken(message.token);
-      }
-    };
-  }, []);
 
   useEffect(() => {
     getConnectionInfo();

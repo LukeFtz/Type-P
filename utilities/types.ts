@@ -34,9 +34,13 @@ export interface InScreen {
 }
 
 export interface communication {
-  func: "STRT_HEAT" | "OVEN_TEMP" | "STRT_RECYCLE" | "CANCEL";
-  val?: string | number;
-  token: string;
+  func: "APP_CONNECTED" | "STRT_HEAT" | "OVEN_TEMP" | "STRT_RECYCLE" | "CANCEL";
+  val?: string | number | JSON | boolean;
+}
+
+export interface communicationOven {
+  func: "OVEN_CONNECTED";
+  val?: string | number | JSON | boolean;
 }
 
 export interface storageitems {
