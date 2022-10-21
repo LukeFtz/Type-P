@@ -3,7 +3,13 @@ import { getItemAsync } from "expo-secure-store";
 import { communication, communicationOven } from "./types";
 import { Database, ref, set, get, child } from "firebase/database";
 
-export const confirmDBConnection = async (dataBase: Database) => {
+let dataBase: Database;
+
+export const defineDataBase = (currentDataBase: Database) => {
+  dataBase = currentDataBase;
+};
+
+export const confirmDBConnection = async () => {
   const dataConfirmation: communication = {
     func: "APP_CONNECTED",
     val: true,
@@ -17,7 +23,7 @@ export const confirmDBConnection = async (dataBase: Database) => {
     });
 };
 
-export const confirmOvenConnected = async (dataBase: Database) => {
+export const confirmOvenConnected = async () => {
   const refDb = ref(dataBase);
   return await get(child(refDb, FROM_OVEN))
     .then((response) => {

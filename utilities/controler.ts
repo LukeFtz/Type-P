@@ -6,18 +6,24 @@
 //   heatOven,
 //   ovenStartRecycle,
 // } from "./functions";
-import { confirmDBConnection, confirmOvenConnected } from "./functions";
+import {
+  confirmDBConnection,
+  confirmOvenConnected,
+  defineDataBase,
+} from "./functions";
 import { valuesNumbers } from "./types";
-import { setValueNumbers } from "./values";
+import { EMAIL, PASSWORD, setValueNumbers } from "./values";
 import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { defineReduxDataBase, verifyDataUpdate } from "./reduxFunctions";
 
 const firebaseConfig = {
   apiKey: "AIzaSyACrfFDWM3lGfD2XUIofP1BefI-CvsWJ3M",
   databaseURL: "https://type-p-default-rtdb.firebaseio.com/",
   projectId: "187863728332",
   storageBucket: "type-p.appspot.com",
-  // messagingSenderId: 'sender-id',
+  messagingSenderId: "ilYVDwTgT8VnS63Wa0DCnvMhRQU2",
   // appId: 'app-id',
   // measurementId: 'G-measurement-id',
 };
@@ -25,11 +31,18 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
+const auth = getAuth(app);
+signInWithEmailAndPassword(auth, EMAIL, PASSWORD);
+
+defineDataBase(database);
+defineReduxDataBase(database);
+
 export const connectAppToFirebase = () => {
-  return confirmDBConnection(database);
+  verifyDataUpdate();
+  return confirmDBConnection();
 };
 export const verifyOvenConnection = () => {
-  return confirmOvenConnected(database);
+  return confirmOvenConnected();
 };
 // export const defineSettings = (tokenDefined: string) => {
 //   // token = tokenDefined;

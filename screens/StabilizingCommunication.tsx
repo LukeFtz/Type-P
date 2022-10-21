@@ -1,4 +1,3 @@
-import { async } from "@firebase/util";
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { useEffect, useState } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
@@ -7,6 +6,7 @@ import {
   connectAppToFirebase,
   verifyOvenConnection,
 } from "../utilities/controler";
+// import { VerifyDataUpdate } from "../utilities/reduxFunctions";
 import { RootStackParamList } from "../utilities/types";
 
 // import { Container } from './styles';
@@ -23,6 +23,7 @@ const StabilizingCommunication: React.FC<screenNavigationProp> = ({
 }) => {
   const [ovenConnected, setOvenConnected] = useState<boolean>(false);
   const [appConnected, setAppConnected] = useState<boolean>(false);
+  // const value = VerifyDataUpdate();
 
   const getConnections = async () => {
     const auxApp = await connectAppToFirebase();
@@ -41,14 +42,14 @@ const StabilizingCommunication: React.FC<screenNavigationProp> = ({
           <Text style={styles.textLabelApproved}>Conectado a </Text>
           <Text style={styles.txtLabelBold}>{route.params.ssid}</Text>
         </View>
-        {appConnected && (
-          <Text style={styles.textLabel}>Aplicativo conectado</Text>
-        )}
-        {ovenConnected && <Text style={styles.textLabel}>Forno conectado</Text>}
         <Text style={styles.textLabel}>Estabelecendo comunicação</Text>
         <View style={styles.viewLogo}>
           <Logo />
         </View>
+        {appConnected && (
+          <Text style={styles.textLabel}>Aplicativo conectado</Text>
+        )}
+        {ovenConnected && <Text style={styles.textLabel}>Forno conectado</Text>}
         <Text style={styles.textLabel}>Aguarde um instante</Text>
       </View>
     </View>

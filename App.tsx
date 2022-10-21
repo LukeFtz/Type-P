@@ -15,6 +15,8 @@ import Recycle from "./screens/Recycle";
 import { RootStackParamList } from "./utilities/types";
 import { LinearGradient } from "expo-linear-gradient";
 import Constants from "expo-constants";
+import { Provider } from "react-redux";
+import store from "./src/storage";
 
 const { Navigator, Screen } = createStackNavigator<RootStackParamList>();
 
@@ -112,9 +114,11 @@ const StackNavigator = () => {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <StackNavigator />
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <StackNavigator />
+      </NavigationContainer>
+    </Provider>
   );
 }
 
