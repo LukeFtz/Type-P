@@ -39,9 +39,10 @@ export interface communication {
     | "APP_CONNECTED"
     | "CONFIG_OVEN"
     | "STRT_HEAT"
-    | "OVEN_TEMP"
     | "STRT_RECYCLE"
-    | "CANCEL";
+    | "CANCEL_HEAT"
+    | "CANCEL_RECYCLE"
+    | "SET_DEFAULT";
   val?: string | number | JSON | boolean;
 }
 
@@ -54,7 +55,9 @@ export interface communicationOven {
     | "HEAT_DONE"
     | "RECYCLE_STARTED"
     | "RECYCLING"
-    | "RECYCLE_FINISHED";
+    | "RECYCLE_FINISHED"
+    | "HEAT_CANCELED"
+    | "RECYCLE_CANCELED";
   val?: string | number | JSON | boolean;
 }
 

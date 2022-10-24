@@ -2,6 +2,8 @@ import { FROM_OVEN, TO_OVEN } from "./values";
 import { getItemAsync } from "expo-secure-store";
 import { communication, communicationOven, storageitems } from "./types";
 import { Database, ref, set, get, child } from "firebase/database";
+import store from "../src/storage";
+import { recycleCanceled } from "../src/reducers/reducer";
 
 let dataBase: Database;
 
@@ -37,6 +39,7 @@ export const setOvenConfiguration = () => {
 export const heatOven = () => {
   const dataFunction: communication = { func: "STRT_HEAT" };
   set(ref(dataBase, TO_OVEN), dataFunction);
+  // store.dispatch(recycleCanceled(false));
 };
 
 export const startRecycling = () => {
@@ -76,12 +79,12 @@ export const getTimeStored = async () => {
   }
 };
 
-// export const ovenStartRecycle = (websocket: WebSocket, token: string) => {
-//   const socketData: communication = { func: "STRT_RECYCLE", token };
-//   websocket.send(JSON.stringify(socketData));
-// };
+export const cancelHeatProcess = () => {
+  const dataFunction: communication = { func: "CANCEL_HEAT" };
+  set(ref(dataBase, TO_OVEN), dataFunction);
+};
 
-// export const cancelProcess = (websocket: WebSocket, token: string) => {
-//   const socketData: communication = { func: "CANCEL", token };
-//   websocket.send(JSON.stringify(socketData));
-// };
+export const cancelRecycleProcess = () => {
+  const dataFunction: communication = { func: "CANCEL_RECYCLE" };
+  set(ref(dataBase, TO_OVEN), dataFunction);
+};

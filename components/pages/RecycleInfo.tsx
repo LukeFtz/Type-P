@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Dimensions, Modal, StyleSheet, Text, View } from "react-native";
 import { InScreen } from "../../utilities/types";
-import { getTime, getTimeInSeconds } from "../../utilities/controler";
+import {
+  cancelRecycle,
+  getTime,
+  getTimeInSeconds,
+} from "../../utilities/controler";
 import RecycleProcess from "../custom/RecycleProcess";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { BlurView } from "expo-blur";
@@ -55,7 +59,7 @@ const RecicleInfo: React.FC<InScreen> = ({ apperInScreen }) => {
   }, []);
 
   const cancelProcess = () => {
-    // cancelCurrentProcess();
+    cancelRecycle();
     setModalVisible(!modalVisible);
   };
 

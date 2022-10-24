@@ -1,15 +1,16 @@
 import {
+  cancelHeatProcess,
+  cancelRecycleProcess,
   getTempStored,
   getTimeSec,
   getTimeStored,
   heatOven,
   startRecycling,
-} from "./functions";
-import {
   confirmDBConnection,
   defineDataBase,
   setOvenConfiguration,
 } from "./functions";
+
 import { valuesNumbers } from "./types";
 import { EMAIL, PASSWORD, setValueNumbers } from "./values";
 import { initializeApp } from "firebase/app";
@@ -53,10 +54,6 @@ export const startRecycle = () => {
   startRecycling();
 };
 
-// export const startRecycle = () => {
-//   ovenStartRecycle(websocket, token);
-// };
-
 export const getTemp = async () => {
   return await getTempStored();
 };
@@ -69,9 +66,13 @@ export const getTimeInSeconds = async () => {
   return await getTimeSec();
 };
 
-// export const cancelCurrentProcess = () => {
-//   cancelProcess(websocket, token);
-// };
+export const cancelHeat = () => {
+  cancelHeatProcess();
+};
+
+export const cancelRecycle = () => {
+  cancelRecycleProcess();
+};
 
 export const defineValue = (props: valuesNumbers) => {
   return setValueNumbers(props);

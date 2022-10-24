@@ -1,12 +1,16 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { RootStackParamList } from "../utilities/types";
 import Logo from "../components/geral/Logo";
 import BtnHeat from "../components/custom/BtnHeat";
 import HeatInfo from "../components/pages/HeatInfo";
 import { useSelector } from "react-redux";
-import { heatingStatus, isHeatFinished } from "../src/reducers/reducer";
+import {
+  heatingStatus,
+  isHeatCanceled,
+  isHeatFinished,
+} from "../src/reducers/reducer";
 
 type screenNavigationProp = StackScreenProps<RootStackParamList, "Heat">;
 
@@ -18,6 +22,7 @@ const Heat: React.FC<screenNavigationProp> = ({ navigation }) => {
 
   const heating = useSelector(heatingStatus);
   const heatingFinished = useSelector(isHeatFinished);
+  const heatCanceled = useSelector(isHeatCanceled);
 
   useEffect(() => {
     if (heating) {
@@ -36,30 +41,16 @@ const Heat: React.FC<screenNavigationProp> = ({ navigation }) => {
     }
   }, [heatingFinished]);
 
-  // useEffect(() => {
-  //   const websocket = getWebSocket();
-  //   websocket.onmessage = (e) => {
-  //     const message = JSON.parse(e.data);
-  //     console.log(message);
-  //     if (message.func === "OVEN_HEATING" && message.token) {
-  //       setShowBtn(false);
-  //       setInfoOnScreen(true);
-  //       setTimeout(() => {
-  //         setShowInfo(true);
-  //         setBtnOnScreen(false);
-  //       }, 500);
-  //     } else if (message.func === "HEAT_COMPLETE" && message.token) {
-  //       navigation.navigate("Recycle");
-  //     } else if (message.func === "PROCESS_CANCELED" && message.token) {
-  //       setInfoOnScreen(false);
-  //       setBtnOnScreen(true);
-  //       setTimeout(() => {
-  //         setShowBtn(true);
-  //         setShowInfo(false);
-  //       }, 500);
-  //     }
-  //   };
-  // }, []);
+  useEffect(() => {
+    if (heatCanceled) {
+      setInfoOnScreen(false);
+      setBtnOnScreen(true);
+      setTimeout(() => {
+        setShowBtn(true);
+        setShowInfo(false);
+      }, 500);
+    }
+  }, [heatCanceled]);
 
   return (
     <View style={styles.container}>

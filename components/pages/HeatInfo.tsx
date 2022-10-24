@@ -10,7 +10,8 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 import { currentTemperature } from "../../src/reducers/reducer";
-import { getTempStored } from "../../utilities/functions";
+import { cancelHeat, getTemp } from "../../utilities/controler";
+// import { getTemp } from "../../utilities/functions";
 import { communication, InScreen } from "../../utilities/types";
 
 const { height, width } = Dimensions.get("screen");
@@ -38,17 +39,18 @@ const HeatInfo: React.FC<InScreen> = ({ apperInScreen }) => {
     }
   }, [apperInScreen]);
 
-  const getTemp = async () => {
-    const auxTemp = await getTempStored();
+  const getTemps = async () => {
+    const auxTemp = await getTemp();
     setTempDef(auxTemp);
   };
 
   useEffect(() => {
-    getTemp();
+    getTemps();
   }, []);
 
   const cancelProcess = () => {
     // cancelCurrentProcess();
+    cancelHeat();
     setModalVisible(!modalVisible);
   };
 

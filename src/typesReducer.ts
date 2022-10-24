@@ -6,4 +6,6 @@ export type reduxValues = {
   heatFinished: boolean;
   recycleStated: boolean;
   recycleFinished: boolean;
+  heatCanceled: boolean;
+  recycleCanceled: boolean;
 };

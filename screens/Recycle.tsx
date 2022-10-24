@@ -6,7 +6,11 @@ import Logo from "../components/geral/Logo";
 import BtnRecycle from "../components/pages/BtnRecycle";
 import RecycleInfo from "../components/pages/RecycleInfo";
 import { useSelector } from "react-redux";
-import { isRecycleFinished, isRecycleStarted } from "../src/reducers/reducer";
+import {
+  isRecycleCanceled,
+  isRecycleFinished,
+  isRecycleStarted,
+} from "../src/reducers/reducer";
 
 type screenNavigationProp = StackScreenProps<RootStackParamList, "Recycle">;
 
@@ -18,6 +22,7 @@ const Recycle: React.FC<screenNavigationProp> = ({ navigation }) => {
 
   const recycle = useSelector(isRecycleStarted);
   const recycleFinished = useSelector(isRecycleFinished);
+  const recycleCanceled = useSelector(isRecycleCanceled);
 
   useEffect(() => {
     if (recycle) {
@@ -36,27 +41,16 @@ const Recycle: React.FC<screenNavigationProp> = ({ navigation }) => {
     }
   }, [recycleFinished]);
 
-  // const ovenCommunication = (e: MessageEvent) => {
-  //   const message = JSON.parse(e.data);
-  //   console.log(message);
-  //   if (message.func === "OVEN_RECYCLING" && message.token) {
-  //     setShowBtn(false);
-  //     setTimeout(() => {
-  //       setInfoOnScreen(true);
-  //       setBtnOnScreen(false);
-  //       setShowInfo(true);
-  //     }, 500);
-  //   } else if (message.func === "HEAT_COMPLETE" && message.token) {
-  //     navigation.navigate("Recycle");
-  //   } else if (message.func === "PROCESS_CANCELED" && message.token) {
-  //     setInfoOnScreen(false);
-  //     setBtnOnScreen(true);
-  //     setTimeout(() => {
-  //       setShowBtn(true);
-  //       setShowInfo(false);
-  //     }, 500);
-  //   }
-  // };
+  useEffect(() => {
+    if (recycleCanceled) {
+      setInfoOnScreen(false);
+      setBtnOnScreen(true);
+      setTimeout(() => {
+        setShowBtn(true);
+        setShowInfo(false);
+      }, 500);
+    }
+  }, [recycleCanceled]);
 
   return (
     <View style={styles.container}>

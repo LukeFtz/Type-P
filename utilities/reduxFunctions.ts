@@ -2,10 +2,12 @@ import { FROM_OVEN } from "./values";
 import { communicationOven } from "./types";
 import { Database, ref, onValue } from "firebase/database";
 import {
+  heatCanceled,
   heatFinished,
   heating,
   ovenConfig,
   ovenConnected,
+  recycleCanceled,
   recycleFinished,
   recycleStarted,
   temperature,
@@ -30,6 +32,7 @@ export const verifyDataUpdate = () => {
         store.dispatch(ovenConfig(true));
       } else if (data.func === "OVEN_HEATTING") {
         store.dispatch(heating(true));
+        store.dispatch(heatCanceled(false));
       } else if (data.func === "HEAT_TEMP") {
         store.dispatch(temperature(Number.parseInt(data.val + "")));
       } else if (data.func === "HEAT_DONE") {
@@ -38,8 +41,15 @@ export const verifyDataUpdate = () => {
         store.dispatch(temperature(Number.parseInt(data.val + "")));
       } else if (data.func === "RECYCLE_STARTED") {
         store.dispatch(recycleStarted(true));
+        store.dispatch(recycleCanceled(false));
       } else if (data.func === "RECYCLE_FINISHED") {
         store.dispatch(recycleFinished(true));
+      } else if (data.func === "HEAT_CANCELED") {
+        store.dispatch(heatCanceled(true));
+        store.dispatch(heating(false));
+      } else if (data.func === "RECYCLE_CANCELED") {
+        store.dispatch(recycleCanceled(true));
+        store.dispatch(recycleStarted(false));
       }
     }
   });
