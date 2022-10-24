@@ -5,7 +5,8 @@ import { RootStackParamList } from "../utilities/types";
 import Logo from "../components/geral/Logo";
 import BtnHeat from "../components/custom/BtnHeat";
 import HeatInfo from "../components/pages/HeatInfo";
-import { getWebSocket } from "../utilities/controler";
+import { useSelector } from "react-redux";
+import { heatingStatus, isHeatFinished } from "../src/reducers/reducer";
 
 type screenNavigationProp = StackScreenProps<RootStackParamList, "Heat">;
 
@@ -15,30 +16,50 @@ const Heat: React.FC<screenNavigationProp> = ({ navigation }) => {
   const [btnOnScreen, setBtnOnScreen] = useState<boolean>(true);
   const [infoOnScreen, setInfoOnScreen] = useState<boolean>(false);
 
+  const heating = useSelector(heatingStatus);
+  const heatingFinished = useSelector(isHeatFinished);
+
   useEffect(() => {
-    const websocket = getWebSocket();
-    websocket.onmessage = (e) => {
-      const message = JSON.parse(e.data);
-      console.log(message);
-      if (message.func === "OVEN_HEATING" && message.token) {
-        setShowBtn(false);
-        setInfoOnScreen(true);
-        setTimeout(() => {
-          setShowInfo(true);
-          setBtnOnScreen(false);
-        }, 500);
-      } else if (message.func === "HEAT_COMPLETE" && message.token) {
-        navigation.navigate("Recycle");
-      } else if (message.func === "PROCESS_CANCELED" && message.token) {
-        setInfoOnScreen(false);
-        setBtnOnScreen(true);
-        setTimeout(() => {
-          setShowBtn(true);
-          setShowInfo(false);
-        }, 500);
-      }
-    };
-  }, []);
+    if (heating) {
+      setShowBtn(false);
+      setInfoOnScreen(true);
+      setTimeout(() => {
+        setShowInfo(true);
+        setBtnOnScreen(false);
+      }, 500);
+    }
+  }, [heating]);
+
+  useEffect(() => {
+    if (heatingFinished) {
+      navigation.navigate("Recycle");
+    }
+  }, [heatingFinished]);
+
+  // useEffect(() => {
+  //   const websocket = getWebSocket();
+  //   websocket.onmessage = (e) => {
+  //     const message = JSON.parse(e.data);
+  //     console.log(message);
+  //     if (message.func === "OVEN_HEATING" && message.token) {
+  //       setShowBtn(false);
+  //       setInfoOnScreen(true);
+  //       setTimeout(() => {
+  //         setShowInfo(true);
+  //         setBtnOnScreen(false);
+  //       }, 500);
+  //     } else if (message.func === "HEAT_COMPLETE" && message.token) {
+  //       navigation.navigate("Recycle");
+  //     } else if (message.func === "PROCESS_CANCELED" && message.token) {
+  //       setInfoOnScreen(false);
+  //       setBtnOnScreen(true);
+  //       setTimeout(() => {
+  //         setShowBtn(true);
+  //         setShowInfo(false);
+  //       }, 500);
+  //     }
+  //   };
+  // }, []);
 
   return (
     <View style={styles.container}>

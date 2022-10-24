@@ -11,6 +11,7 @@ export type RootStackParamList = {
   OvenConfiguration: undefined;
   Heat: undefined;
   Recycle: undefined;
+  FinishedScreen: undefined;
 };
 
 export type navigationProps = {
@@ -34,18 +35,32 @@ export interface InScreen {
 }
 
 export interface communication {
-  func: "APP_CONNECTED" | "STRT_HEAT" | "OVEN_TEMP" | "STRT_RECYCLE" | "CANCEL";
+  func:
+    | "APP_CONNECTED"
+    | "CONFIG_OVEN"
+    | "STRT_HEAT"
+    | "OVEN_TEMP"
+    | "STRT_RECYCLE"
+    | "CANCEL";
   val?: string | number | JSON | boolean;
 }
 
 export interface communicationOven {
-  func: "OVEN_CONNECTED";
+  func:
+    | "OVEN_CONNECTED"
+    | "OVEN_CONFIGURATED"
+    | "OVEN_HEATTING"
+    | "HEAT_TEMP"
+    | "HEAT_DONE"
+    | "RECYCLE_STARTED"
+    | "RECYCLING"
+    | "RECYCLE_FINISHED";
   val?: string | number | JSON | boolean;
 }
 
 export interface storageitems {
-  tempo: string;
-  temperatura: number;
+  time: string;
+  temperature: number;
 }
 
 export interface showModal {

@@ -41,6 +41,29 @@ const SelectWifi: React.FC<screenNavigationProp> = ({ navigation }) => {
     setShowModal(true);
   };
 
+  // const getFirebase = () => {
+  //   fetch(OVEN_SERVER + "/firebase")
+  //     .then((response) => response.json())
+  //     .then((json) => {
+  //       // setWifiAPs(json);
+  //       if (json.firebase_connected == true) {
+  //         if (selectedWifi?.ssid) {
+  //           setShowModal(false);
+  //           navigation.navigate("StabilizingCommunication", {
+  //             ssid: selectedWifi.ssid,
+  //           });
+  //         }
+  //       } else {
+  //         getFirebase();
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       getFirebase();
+  //       // setfirstPass(false);
+  //       // setWifiAPs([]);
+  //     });
+  // };
+
   const connectToWifi = () => {
     const postContent = {
       method: "POST",
@@ -60,7 +83,9 @@ const SelectWifi: React.FC<screenNavigationProp> = ({ navigation }) => {
       .then((json) => {
         if (json.connected === true) {
           setErrorText("");
+          // getFirebase();
           if (selectedWifi?.ssid) {
+            setShowModal(false);
             navigation.navigate("StabilizingCommunication", {
               ssid: selectedWifi.ssid,
             });
@@ -166,13 +191,13 @@ const SelectWifi: React.FC<screenNavigationProp> = ({ navigation }) => {
         <View style={[styles.row, styles.viewTopperContent]}>
           <Wifi />
           <View style={styles.viewScanWifi}>
-            {/* <TouchableOpacity
+            <TouchableOpacity
               style={styles.btnScanWifi}
               onPress={() => getLocalAPs()}
             >
               <Text style={styles.textLabelWhite}>Scanear Redes</Text>
-            </TouchableOpacity> */}
-            <TouchableOpacity
+            </TouchableOpacity>
+            {/* <TouchableOpacity
               style={styles.btnScanWifi}
               onPress={() =>
                 navigation.navigate("StabilizingCommunication", {
@@ -181,7 +206,7 @@ const SelectWifi: React.FC<screenNavigationProp> = ({ navigation }) => {
               }
             >
               <Text style={styles.textLabelWhite}>Scanear Redes</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
       </View>

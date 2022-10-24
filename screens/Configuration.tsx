@@ -20,7 +20,7 @@ const NUMBERS = getValues();
 
 const Configuration: React.FC<screenNavigationProp> = (navigationProps) => {
   const [tempo, setTempo] = useState<string>("00:01");
-  const [temperatura, setTemperatura] = useState<number>(200);
+  const [temperatura, setTemperatura] = useState<number>(40);
   const [quantidade, setQuantidade] = useState<number>(10);
 
   const [uniQnt, setUniQnt] = useState<number>(0);

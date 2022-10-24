@@ -4,8 +4,9 @@ import { StyleSheet, View } from "react-native";
 import { RootStackParamList } from "../utilities/types";
 import Logo from "../components/geral/Logo";
 import BtnRecycle from "../components/pages/BtnRecycle";
-import { getWebSocket } from "../utilities/controler";
 import RecycleInfo from "../components/pages/RecycleInfo";
+import { useSelector } from "react-redux";
+import { isRecycleFinished, isRecycleStarted } from "../src/reducers/reducer";
 
 type screenNavigationProp = StackScreenProps<RootStackParamList, "Recycle">;
 
@@ -15,37 +16,47 @@ const Recycle: React.FC<screenNavigationProp> = ({ navigation }) => {
   const [btnOnScreen, setBtnOnScreen] = useState<boolean>(true);
   const [infoOnScreen, setInfoOnScreen] = useState<boolean>(false);
 
-  const ovenCommunication = (e: MessageEvent) => {
-    // websocket.onmessage = (e) => {
-    const message = JSON.parse(e.data);
-    console.log(message);
-    if (message.func === "OVEN_RECYCLING" && message.token) {
-      setShowBtn(false);
-      setTimeout(() => {
-        setInfoOnScreen(true);
-        setBtnOnScreen(false);
-        setShowInfo(true);
-      }, 500);
-    } else if (message.func === "HEAT_COMPLETE" && message.token) {
-      navigation.navigate("Recycle");
-    } else if (message.func === "PROCESS_CANCELED" && message.token) {
-      setInfoOnScreen(false);
-      setBtnOnScreen(true);
-      setTimeout(() => {
-        setShowBtn(true);
-        setShowInfo(false);
-      }, 500);
-    }
-    // };
-  };
+  const recycle = useSelector(isRecycleStarted);
+  const recycleFinished = useSelector(isRecycleFinished);
 
   useEffect(() => {
-    const websocket = getWebSocket();
-    websocket.addEventListener("message", (e) => ovenCommunication(e));
-    return websocket.removeEventListener("message", (e) =>
-      ovenCommunication(e)
-    );
-  }, []);
+    if (recycle) {
+      setShowBtn(false);
+      setInfoOnScreen(true);
+      setTimeout(() => {
+        setShowInfo(true);
+        setBtnOnScreen(false);
+      }, 500);
+    }
+  }, [recycle]);
+
+  useEffect(() => {
+    if (recycleFinished) {
+      navigation.navigate("FinishedScreen");
+    }
+  }, [recycleFinished]);
+
+  // const ovenCommunication = (e: MessageEvent) => {
+  //   const message = JSON.parse(e.data);
+  //   console.log(message);
+  //   if (message.func === "OVEN_RECYCLING" && message.token) {
+  //     setShowBtn(false);
+  //     setTimeout(() => {
+  //       setInfoOnScreen(true);
+  //       setBtnOnScreen(false);
+  //       setShowInfo(true);
+  //     }, 500);
+  //   } else if (message.func === "HEAT_COMPLETE" && message.token) {
+  //     navigation.navigate("Recycle");
+  //   } else if (message.func === "PROCESS_CANCELED" && message.token) {
+  //     setInfoOnScreen(false);
+  //     setBtnOnScreen(true);
+  //     setTimeout(() => {
+  //       setShowBtn(true);
+  //       setShowInfo(false);
+  //     }, 500);
+  //   }
+  // };
 
   return (
     <View style={styles.container}>

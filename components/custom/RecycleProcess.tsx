@@ -27,6 +27,7 @@ const RecycleProcess: React.FC<RecyclingProps> = ({ timeDefined }) => {
   const sizeCircle = 150;
   const diametroPercent = (sizeCircle - borderWidth) * 2 * Math.PI;
   const progress = useSharedValue(diametroPercent * (100 / 100));
+  // const [timeUpdated, setTimeUpdated] = useState<number>(0);
 
   const animatedProgress = useAnimatedProps(() => ({
     strokeDashoffset: progress.value,
@@ -89,8 +90,11 @@ const RecycleProcess: React.FC<RecyclingProps> = ({ timeDefined }) => {
   });
 
   useEffect(() => {
+    // if (timeDefined !== 0) {
+    // setTimeUpdated(timeDefined);
     startRecicleProcess();
     startRecicle();
+    // }
     // return clearInterval(runningTimmer.current as NodeJS.Timeout);
   }, []);
 

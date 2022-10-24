@@ -4,6 +4,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { navigationProps } from "../../utilities/types";
 import { setItemAsync } from "expo-secure-store";
+import { convertTime } from "../../utilities/values";
 
 const Forward: React.FC<navigationProps> = ({
   goTo,
@@ -12,17 +13,19 @@ const Forward: React.FC<navigationProps> = ({
   temperatura,
 }) => {
   const saveInfo = () => {
+    setItemAsync("stringTime", tempo + "");
+    const timeInSeconds = convertTime(tempo + "");
     const storage = {
-      tempo: tempo,
-      temperatura: temperatura,
+      time: timeInSeconds,
+      temperature: temperatura,
     };
-    setItemAsync("storage", JSON.stringify(storage))
-      .then(() => {
-        navigation.navigate("OvenConfiguration");
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    setItemAsync("storage", JSON.stringify(storage));
+    // .then(() => {
+    //   navigation.navigate("WifiConfigurations");
+    // })
+    // .catch((e) => {
+    //   console.log(e);
+    // });
   };
 
   const goToNextPage = () => {
@@ -30,6 +33,7 @@ const Forward: React.FC<navigationProps> = ({
       navigation.navigate("Configuration");
     }
     if (goTo === "CONFIGURATE_WIFI") {
+      saveInfo();
       navigation.navigate("WifiConfigurations");
     }
     if (goTo === "SELECT_WIFI") {

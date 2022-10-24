@@ -9,9 +9,9 @@ import Configuration from "./screens/Configuration";
 import WifiConfigurations from "./screens/WifiConfigurations";
 import SelectWifi from "./screens/SelectWifi";
 import StabilizingCommunication from "./screens/StabilizingCommunication";
-import OvenConfiguration from "./screens/OvenConfiguration";
 import Heat from "./screens/Heat";
 import Recycle from "./screens/Recycle";
+import FinishedScreen from "./screens/FinishedScreen";
 import { RootStackParamList } from "./utilities/types";
 import { LinearGradient } from "expo-linear-gradient";
 import Constants from "expo-constants";
@@ -88,13 +88,6 @@ const StackNavigator = () => {
         }}
       />
       <Screen
-        name="OvenConfiguration"
-        component={OvenConfiguration}
-        options={{
-          header: ({ navigation }) => <Header {...navigation} />,
-        }}
-      />
-      <Screen
         name="Heat"
         component={Heat}
         options={{
@@ -106,6 +99,13 @@ const StackNavigator = () => {
         component={Recycle}
         options={{
           header: ({ navigation }) => <Header {...navigation} />,
+        }}
+      />
+      <Screen
+        name="FinishedScreen"
+        component={FinishedScreen}
+        options={{
+          headerShown: false,
         }}
       />
     </Navigator>

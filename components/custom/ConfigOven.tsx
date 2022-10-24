@@ -2,30 +2,17 @@ import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-// import { getWebSocket } from "../../utilities/controler";
-import { navigationPropsConfigOven } from "../../utilities/types";
+import { configureOvenSettings } from "../../utilities/controler";
 
-const ConfigOven: React.FC<navigationPropsConfigOven> = ({ navigation }) => {
-  const [disableButton, setDisableButton] = useState<boolean>(false);
-  let websocket: WebSocket;
-
-  // const goToNextPage = () => {
-  //   setDisableButton(true);
-  //   websocket = getWebSocket();
-  //   websocket.onmessage = (e) => {
-  //     const message = JSON.parse(e.data);
-  //     console.log(message);
-  //     if (message.func === "OVEN_SETTED" && message.token) {
-  //       navigation.navigate("Heat");
-  //     }
-  //   };
-  // };
+const ConfigOven: React.FC = () => {
+  const configureOven = () => {
+    configureOvenSettings();
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.txtBtn}>Configurar Forno</Text>
-      <TouchableOpacity disabled={disableButton}>
-        {/* <TouchableOpacity onPress={goToNextPage} disabled={disableButton}> */}
+      <TouchableOpacity onPress={() => configureOven()}>
         <LinearGradient
           colors={["#42C3A1", "#fff"]}
           style={styles.btnBorderView}

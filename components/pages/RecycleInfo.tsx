@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Dimensions, Modal, StyleSheet, Text, View } from "react-native";
-import { communication, InScreen } from "../../utilities/types";
-import {
-  cancelCurrentProcess,
-  getTime,
-  getWebSocket,
-} from "../../utilities/controler";
+import { InScreen } from "../../utilities/types";
+import { getTime, getTimeInSeconds } from "../../utilities/controler";
 import RecycleProcess from "../custom/RecycleProcess";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { BlurView } from "expo-blur";
@@ -15,29 +11,26 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { useSelector } from "react-redux";
+import { currentTemperature } from "../../src/reducers/reducer";
 
 // import { Container } from './styles';
 const { width } = Dimensions.get("screen");
-let websocket: WebSocket;
 
 const RecicleInfo: React.FC<InScreen> = ({ apperInScreen }) => {
   const [timeDef, setTimeDef] = useState<string>("");
-  const [currentTemp, setCurrentTemp] = useState<number | string>(100);
-  let temporaryIndex = true;
+  const [timeSec, setTimeSec] = useState<number | null>();
+  // const [currentTemp, setCurrentTemp] = useState<number | string>(100);
+  const currentTemp = useSelector(currentTemperature);
   const [modalVisible, setModalVisible] = useState(false);
   const opacity = useSharedValue<number>(1);
 
   const getTimeDef = async () => {
+    const auxTimeSeconds = await getTimeInSeconds();
+    setTimeSec(auxTimeSeconds);
+    console.log(auxTimeSeconds);
     const aux: string = await getTime();
     setTimeDef(aux);
-  };
-
-  const onSocketMessage = (e: MessageEvent) => {
-    console.log(e);
-    const message: communication = JSON.parse(e.data);
-    if (message.func === "OVEN_TEMP" && message.val && message.token) {
-      setCurrentTemp(message.val);
-    }
   };
 
   const animatedStyles = useAnimatedStyle(() => {
@@ -58,26 +51,11 @@ const RecicleInfo: React.FC<InScreen> = ({ apperInScreen }) => {
   }, [apperInScreen]);
 
   useEffect(() => {
-    websocket = getWebSocket();
     getTimeDef();
-    websocket.addEventListener("message", (e) => onSocketMessage(e));
-
-    return websocket.removeEventListener("message", (e) => onSocketMessage(e));
   }, []);
 
-  const temporaryFunc = () => {
-    if (temporaryIndex) {
-      temporaryIndex = false;
-      const temporaryVal = JSON.stringify({
-        func: "SEND_VAL",
-        token: "$Xip%meT",
-      });
-      websocket.send(temporaryVal);
-    }
-  };
-
   const cancelProcess = () => {
-    cancelCurrentProcess();
+    // cancelCurrentProcess();
     setModalVisible(!modalVisible);
   };
 
@@ -126,12 +104,10 @@ const RecicleInfo: React.FC<InScreen> = ({ apperInScreen }) => {
         </View>
       </View>
       <View style={styles.centerialize}>
-        <RecycleProcess timeDefined={30} />
+        {timeSec && <RecycleProcess timeDefined={timeSec} />}
       </View>
       <View style={styles.centerialize}>
-        <Text style={styles.txtLabelTemp} onPress={temporaryFunc}>
-          {currentTemp}°
-        </Text>
+        <Text style={styles.txtLabelTemp}>{currentTemp}°</Text>
       </View>
       <View style={styles.viewBtnCancel}>
         <TouchableOpacity onPress={() => setModalVisible(true)}>

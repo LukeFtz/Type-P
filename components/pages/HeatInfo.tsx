@@ -8,53 +8,18 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import {
-  cancelCurrentProcess,
-  getTemp,
-  getWebSocket,
-} from "../../utilities/controler";
+import { useSelector } from "react-redux";
+import { currentTemperature } from "../../src/reducers/reducer";
+import { getTempStored } from "../../utilities/functions";
 import { communication, InScreen } from "../../utilities/types";
 
 const { height, width } = Dimensions.get("screen");
-let websocket: WebSocket;
 
 const HeatInfo: React.FC<InScreen> = ({ apperInScreen }) => {
-  const [currentTemp, setCurrentTemp] = useState<number | string>(100);
+  const currentTemp = useSelector(currentTemperature);
   const [tempDef, setTempDef] = useState<number>(0);
   const [modalVisible, setModalVisible] = useState(false);
-  let temporaryIndex = true;
   const opacity = useSharedValue<number>(1);
-
-  const getTempt = async () => {
-    const aux: number = await getTemp();
-    setTempDef(aux);
-  };
-  const onSocketMessage = (e: MessageEvent) => {
-    // websocket.onmessage = (e) => {
-    console.log(e);
-    const message: communication = JSON.parse(e.data);
-    if (message.func === "OVEN_TEMP" && message.val && message.token) {
-      setCurrentTemp(message.val);
-    }
-    // };
-  };
-
-  const temporaryFunc = () => {
-    if (temporaryIndex) {
-      temporaryIndex = false;
-      const temporaryVal = JSON.stringify({
-        func: "SEND_VAL",
-        token: "$Xip%meT",
-      });
-      websocket.send(temporaryVal);
-    } else {
-      const temporaryVal = JSON.stringify({
-        func: "SEND_COMPLETE",
-        token: "$Xip%meT",
-      });
-      websocket.send(temporaryVal);
-    }
-  };
 
   const animatedStyles = useAnimatedStyle(() => {
     return {
@@ -73,15 +38,17 @@ const HeatInfo: React.FC<InScreen> = ({ apperInScreen }) => {
     }
   }, [apperInScreen]);
 
+  const getTemp = async () => {
+    const auxTemp = await getTempStored();
+    setTempDef(auxTemp);
+  };
+
   useEffect(() => {
-    websocket = getWebSocket();
-    getTempt();
-    websocket.addEventListener("message", (e) => onSocketMessage(e));
-    return websocket.removeEventListener("message", (e) => onSocketMessage(e));
+    getTemp();
   }, []);
 
   const cancelProcess = () => {
-    cancelCurrentProcess();
+    // cancelCurrentProcess();
     setModalVisible(!modalVisible);
   };
 
@@ -120,9 +87,7 @@ const HeatInfo: React.FC<InScreen> = ({ apperInScreen }) => {
       </Modal>
       <Animated.View style={[styles.viewMainConten, animatedStyles]}>
         <View style={styles.centerObj}>
-          <Text style={styles.txtLabel} onPress={temporaryFunc}>
-            Temperatura Atual
-          </Text>
+          <Text style={styles.txtLabel}>Temperatura Atual</Text>
           <Text style={styles.txtCurrentTemp}>{currentTemp}°</Text>
           <View style={styles.viewTempDef}>
             <Text style={styles.txtLabel}>Temperatura Definida </Text>

@@ -1,15 +1,14 @@
-// import {
-//   cancelProcess,
-//   defineOvenSettings,
-//   getTempStored,
-//   getTimeStored,
-//   heatOven,
-//   ovenStartRecycle,
-// } from "./functions";
+import {
+  getTempStored,
+  getTimeSec,
+  getTimeStored,
+  heatOven,
+  startRecycling,
+} from "./functions";
 import {
   confirmDBConnection,
-  confirmOvenConnected,
   defineDataBase,
+  setOvenConfiguration,
 } from "./functions";
 import { valuesNumbers } from "./types";
 import { EMAIL, PASSWORD, setValueNumbers } from "./values";
@@ -36,34 +35,39 @@ signInWithEmailAndPassword(auth, EMAIL, PASSWORD);
 
 defineDataBase(database);
 defineReduxDataBase(database);
+verifyDataUpdate();
 
 export const connectAppToFirebase = () => {
-  verifyDataUpdate();
   return confirmDBConnection();
 };
-export const verifyOvenConnection = () => {
-  return confirmOvenConnected();
-};
-// export const defineSettings = (tokenDefined: string) => {
-//   // token = tokenDefined;
-//   defineOvenSettings(websocket, tokenDefined);
-// };
 
-// export const startHeatting = () => {
-//   heatOven(websocket, token);
-// };
+export const configureOvenSettings = () => {
+  setOvenConfiguration();
+};
+
+export const startHeatting = () => {
+  heatOven();
+};
+
+export const startRecycle = () => {
+  startRecycling();
+};
 
 // export const startRecycle = () => {
 //   ovenStartRecycle(websocket, token);
 // };
 
-// export const getTemp = async () => {
-//   return await getTempStored();
-// };
+export const getTemp = async () => {
+  return await getTempStored();
+};
 
-// export const getTime = async () => {
-//   return await getTimeStored();
-// };
+export const getTime = async () => {
+  return await getTimeStored();
+};
+
+export const getTimeInSeconds = async () => {
+  return await getTimeSec();
+};
 
 // export const cancelCurrentProcess = () => {
 //   cancelProcess(websocket, token);

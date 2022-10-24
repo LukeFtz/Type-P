@@ -16,7 +16,6 @@ type screenNavigationProp = StackScreenProps<
 >;
 
 const { width, height } = Dimensions.get("screen");
-let token: string;
 
 const WifiCOnfigurations: React.FC<screenNavigationProp> = (
   navigationProps
@@ -27,35 +26,13 @@ const WifiCOnfigurations: React.FC<screenNavigationProp> = (
   const [showConnected, setShowConnected] = useState<boolean>(false);
   const [text, setText] = useState<string>("");
 
-  const setOvenToken = () => {
-    const postContent = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    };
-
-    fetch(OVEN_SERVER + "/token" + "?token=" + token + "", postContent)
-      .then((response) => response.json())
-      .then((json) => {
-        if (json.token_paried === true) {
-          setConnected(true);
-        } else {
-          setOvenToken();
-        }
-      })
-      .catch((e) => {
-        setOvenToken();
-      });
-  };
-
   const getConnectionInfo = () => {
     fetch(OVEN_SERVER + "/")
       .then((response) => response.json())
       .then((json) => {
         if (json.typep === true) {
           setText("");
-          setOvenToken();
+          setConnected(true);
         }
       })
       .catch((e) => {
@@ -102,8 +79,8 @@ const WifiCOnfigurations: React.FC<screenNavigationProp> = (
         {showConnected && <Connected />}
       </View>
       <View style={styles.fullWidth}>
-        {/* {showConnected && <Forward goTo="SELECT_WIFI" {...navigationProps} />} */}
-        <Forward goTo="SELECT_WIFI" {...navigationProps} />
+        {showConnected && <Forward goTo="SELECT_WIFI" {...navigationProps} />}
+        {/* <Forward goTo="SELECT_WIFI" {...navigationProps} /> */}
       </View>
     </View>
   );
