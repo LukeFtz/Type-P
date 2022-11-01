@@ -11,6 +11,7 @@ import {
   recycleFinished,
   recycleStarted,
   temperature,
+  setDefaultReducerValues,
 } from "../src/reducers/reducer";
 import store from "../src/storage";
 
@@ -44,6 +45,7 @@ export const verifyDataUpdate = () => {
         store.dispatch(recycleCanceled(false));
       } else if (data.func === "RECYCLE_FINISHED") {
         store.dispatch(recycleFinished(true));
+        store.dispatch(setDefaultReducerValues());
       } else if (data.func === "HEAT_CANCELED") {
         store.dispatch(heatCanceled(true));
         store.dispatch(heating(false));

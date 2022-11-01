@@ -5,6 +5,9 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { navigationProps } from "../../utilities/types";
 import { setItemAsync } from "expo-secure-store";
 import { convertTime } from "../../utilities/values";
+import { ovenConnectedStatus } from "../../src/reducers/reducer";
+import { useDispatch, useSelector } from "react-redux";
+import { setDefaultValues } from "../../utilities/controler";
 
 const Forward: React.FC<navigationProps> = ({
   goTo,
@@ -12,6 +15,8 @@ const Forward: React.FC<navigationProps> = ({
   tempo,
   temperatura,
 }) => {
+  const ovenConnected = useSelector(ovenConnectedStatus);
+  const dispatch = useDispatch();
   const saveInfo = () => {
     setItemAsync("stringTime", tempo + "");
     const timeInSeconds = convertTime(tempo + "");
@@ -20,12 +25,6 @@ const Forward: React.FC<navigationProps> = ({
       temperature: temperatura,
     };
     setItemAsync("storage", JSON.stringify(storage));
-    // .then(() => {
-    //   navigation.navigate("WifiConfigurations");
-    // })
-    // .catch((e) => {
-    //   console.log(e);
-    // });
   };
 
   const goToNextPage = () => {
@@ -34,7 +33,14 @@ const Forward: React.FC<navigationProps> = ({
     }
     if (goTo === "CONFIGURATE_WIFI") {
       saveInfo();
-      navigation.navigate("WifiConfigurations");
+      if (ovenConnected) {
+        navigation.navigate("StabilizingCommunication", { ssid: "Wifi" });
+        dispatch({ type: "setDefaultReducerValues" });
+      } else {
+        setDefaultValues();
+        dispatch({ type: "setDefault" });
+        navigation.navigate("WifiConfigurations");
+      }
     }
     if (goTo === "SELECT_WIFI") {
       navigation.navigate("SelectWifi");

@@ -1,12 +1,22 @@
+import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useSelector } from "react-redux";
+import { selectConfigurated } from "../../src/reducers/reducer";
 import { configureOvenSettings } from "../../utilities/controler";
+import { navigationPropsConfigOven } from "../../utilities/types";
 
 const ConfigOven: React.FC = () => {
+  const ovenConfigurated = useSelector(selectConfigurated);
+  const navigation = useNavigation<navigationPropsConfigOven>();
   const configureOven = () => {
-    configureOvenSettings();
+    if (ovenConfigurated) {
+      navigation.navigate("Heat");
+    } else {
+      configureOvenSettings();
+    }
   };
 
   return (
@@ -31,7 +41,7 @@ const ConfigOven: React.FC = () => {
   );
 };
 
-export default ConfigOven;
+export default React.memo(ConfigOven);
 
 const styles = StyleSheet.create({
   container: {

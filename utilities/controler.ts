@@ -9,6 +9,8 @@ import {
   confirmDBConnection,
   defineDataBase,
   setOvenConfiguration,
+  defaultValue,
+  resetOvenConfig,
 } from "./functions";
 
 import { valuesNumbers } from "./types";
@@ -46,6 +48,10 @@ export const configureOvenSettings = () => {
   setOvenConfiguration();
 };
 
+export const setDefaultValues = () => {
+  defaultValue();
+};
+
 export const startHeatting = () => {
   heatOven();
 };
@@ -76,4 +82,8 @@ export const cancelRecycle = () => {
 
 export const defineValue = (props: valuesNumbers) => {
   return setValueNumbers(props);
+};
+
+export const resetOvenConfiguration = () => {
+  resetOvenConfig();
 };

@@ -42,7 +42,8 @@ export interface communication {
     | "STRT_RECYCLE"
     | "CANCEL_HEAT"
     | "CANCEL_RECYCLE"
-    | "SET_DEFAULT";
+    | "SET_DEFAULT"
+    | "DEFAULT";
   val?: string | number | JSON | boolean;
 }
 
@@ -80,4 +81,8 @@ export interface wifiData {
   ssid: string;
   strength: number;
   security: boolean;
+}
+
+export interface modalPickerTypes {
+  type: "WEIGHT" | "TIME" | "TEMPERATURE";
 }

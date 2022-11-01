@@ -46,6 +46,17 @@ export const reducerSlice = createSlice({
       state.recycleCanceled = action.payload;
     },
     setDefault: (state) => {
+      (state.ovenConnected = false),
+        (state.ovenConfiguration = false),
+        (state.heatStatus = false),
+        (state.temperature = 0),
+        (state.heatFinished = false),
+        (state.recycleStated = false),
+        (state.recycleFinished = false),
+        (state.heatCanceled = false),
+        (state.recycleCanceled = false);
+    },
+    setDefaultReducerValues: (state) => {
       (state.ovenConfiguration = false),
         (state.heatStatus = false),
         (state.temperature = 0),
@@ -69,6 +80,7 @@ export const {
   heatCanceled,
   recycleCanceled,
   setDefault,
+  setDefaultReducerValues,
 } = reducerSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type

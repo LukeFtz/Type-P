@@ -2,7 +2,10 @@ import { StackScreenProps } from "@react-navigation/stack";
 import React, { useEffect, useState } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import Logo from "../components/geral/Logo";
-import { connectAppToFirebase } from "../utilities/controler";
+import {
+  connectAppToFirebase,
+  resetOvenConfiguration,
+} from "../utilities/controler";
 // import { VerifyDataUpdate } from "../utilities/reduxFunctions";
 import { RootStackParamList } from "../utilities/types";
 import Finished from "../components/icons/Finished";
@@ -13,8 +16,9 @@ import {
   selectConfigurated,
 } from "../src/reducers/reducer";
 import { useNetInfo } from "@react-native-community/netinfo";
-
-// import { Container } from './styles';
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { LinearGradient } from "expo-linear-gradient";
+import Constants from "expo-constants";
 const { width, height } = Dimensions.get("screen");
 
 type screenNavigationProp = StackScreenProps<
@@ -34,6 +38,43 @@ const StabilizingCommunication: React.FC<screenNavigationProp> = ({
   const netInfo = useNetInfo();
 
   const ovenConfigurated = useSelector(selectConfigurated);
+
+  const Header = (_navigation: { goBack: () => void }) => (
+    <View style={styles.containerHeader}>
+      <TouchableOpacity
+        onPress={() => {
+          if (ovenConfigurated) {
+            resetOvenConfiguration();
+            _navigation.goBack();
+          } else {
+            _navigation.goBack();
+          }
+        }}
+      >
+        <LinearGradient
+          colors={["#C34242", "#fff"]}
+          style={styles.btnBorderView}
+          start={[0, 1]}
+          end={[1, 1]}
+        >
+          <LinearGradient
+            colors={["#E39B9B", "#fff"]}
+            style={styles.btnView}
+            start={[0, 1]}
+            end={[1, 1]}
+          >
+            {/* <Text style={styles.txtBtn}>RECICLAR</Text> */}
+          </LinearGradient>
+        </LinearGradient>
+      </TouchableOpacity>
+    </View>
+  );
+
+  const customHeader = () => {
+    navigation.setOptions({
+      header: ({ navigation }) => <Header {...navigation} />,
+    });
+  };
 
   const getConnections = async () => {
     const auxApp = await connectAppToFirebase();
@@ -62,6 +103,7 @@ const StabilizingCommunication: React.FC<screenNavigationProp> = ({
   }, [netInfo]);
 
   useEffect(() => {
+    customHeader();
     getConnections();
   }, []);
   return (
@@ -102,6 +144,26 @@ const StabilizingCommunication: React.FC<screenNavigationProp> = ({
 export default StabilizingCommunication;
 
 const styles = StyleSheet.create({
+  containerHeader: {
+    paddingTop: Constants.statusBarHeight,
+    paddingLeft: 10,
+    justifyContent: "center",
+    backgroundColor: "#fff",
+  },
+  btnView: {
+    width: 40,
+    height: 40,
+    borderRadius: 40 / 2,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  btnBorderView: {
+    width: 45,
+    height: 45,
+    borderRadius: 45 / 2,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     flex: 1,
     justifyContent: "space-between",

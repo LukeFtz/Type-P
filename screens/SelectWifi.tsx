@@ -41,29 +41,6 @@ const SelectWifi: React.FC<screenNavigationProp> = ({ navigation }) => {
     setShowModal(true);
   };
 
-  // const getFirebase = () => {
-  //   fetch(OVEN_SERVER + "/firebase")
-  //     .then((response) => response.json())
-  //     .then((json) => {
-  //       // setWifiAPs(json);
-  //       if (json.firebase_connected == true) {
-  //         if (selectedWifi?.ssid) {
-  //           setShowModal(false);
-  //           navigation.navigate("StabilizingCommunication", {
-  //             ssid: selectedWifi.ssid,
-  //           });
-  //         }
-  //       } else {
-  //         getFirebase();
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       getFirebase();
-  //       // setfirstPass(false);
-  //       // setWifiAPs([]);
-  //     });
-  // };
-
   const connectToWifi = () => {
     const postContent = {
       method: "POST",

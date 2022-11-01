@@ -11,6 +11,7 @@ import {
   isHeatCanceled,
   isHeatFinished,
 } from "../src/reducers/reducer";
+import { setDefaultValues } from "../utilities/controler";
 
 type screenNavigationProp = StackScreenProps<RootStackParamList, "Heat">;
 
@@ -23,6 +24,12 @@ const Heat: React.FC<screenNavigationProp> = ({ navigation }) => {
   const heating = useSelector(heatingStatus);
   const heatingFinished = useSelector(isHeatFinished);
   const heatCanceled = useSelector(isHeatCanceled);
+
+  const customHeader = () => {
+    navigation.setOptions({
+      headerShown: !showInfo,
+    });
+  };
 
   useEffect(() => {
     if (heating) {
@@ -38,6 +45,11 @@ const Heat: React.FC<screenNavigationProp> = ({ navigation }) => {
   useEffect(() => {
     if (heatingFinished) {
       navigation.navigate("Recycle");
+    } else {
+      setShowBtn(true);
+      setShowInfo(false);
+      setBtnOnScreen(true);
+      setInfoOnScreen(false);
     }
   }, [heatingFinished]);
 
@@ -48,9 +60,14 @@ const Heat: React.FC<screenNavigationProp> = ({ navigation }) => {
       setTimeout(() => {
         setShowBtn(true);
         setShowInfo(false);
+        setDefaultValues();
       }, 500);
     }
   }, [heatCanceled]);
+
+  useEffect(() => {
+    customHeader();
+  }, []);
 
   return (
     <View style={styles.container}>
