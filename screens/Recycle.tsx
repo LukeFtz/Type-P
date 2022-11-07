@@ -30,12 +30,12 @@ const Recycle: React.FC<screenNavigationProp> = ({ navigation }) => {
   const recycleFinished = useSelector(isRecycleFinished);
   const recycleCanceled = useSelector(isRecycleCanceled);
 
-  const getConnections = async () => {
-    let auxApp = await connectAppToFirebase();
-    while (!auxApp) {
-      auxApp = await connectAppToFirebase();
-    }
-  };
+  // const getConnections = async () => {
+  //   let auxApp = await connectAppToFirebase();
+  //   while (!auxApp) {
+  //     auxApp = await connectAppToFirebase();
+  //   }
+  // };
 
   const Header = (_navigation: { goBack: () => void }) => (
     <View style={styles.containerHeader}>
@@ -84,7 +84,8 @@ const Recycle: React.FC<screenNavigationProp> = ({ navigation }) => {
 
   useEffect(() => {
     if (recycleFinished) {
-      getConnections();
+      // getConnections();
+      setDefaultValues();
       navigation.navigate("FinishedScreen");
     }
   }, [recycleFinished]);

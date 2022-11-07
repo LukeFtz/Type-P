@@ -42,6 +42,7 @@ export interface communication {
     | "STRT_RECYCLE"
     | "CANCEL_HEAT"
     | "CANCEL_RECYCLE"
+    | "RECICLE_DONE"
     | "SET_DEFAULT"
     | "DEFAULT";
   val?: string | number | JSON | boolean;

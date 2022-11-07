@@ -9,6 +9,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import Svg, { Circle } from "react-native-svg";
+import { finishRecycle } from "../../utilities/controler";
 
 // import { Container } from './styles';
 
@@ -27,6 +28,7 @@ const RecycleProcess: React.FC<RecyclingProps> = ({ timeDefined }) => {
   const sizeCircle = 150;
   const diametroPercent = (sizeCircle - borderWidth) * 2 * Math.PI;
   const progress = useSharedValue(diametroPercent * (100 / 100));
+  let startTime: number;
   // const [timeUpdated, setTimeUpdated] = useState<number>(0);
 
   const animatedProgress = useAnimatedProps(() => ({
@@ -36,6 +38,7 @@ const RecycleProcess: React.FC<RecyclingProps> = ({ timeDefined }) => {
   useEffect(() => {
     if (percent === 100) {
       clearInterval(runningTimmer.current as NodeJS.Timeout);
+      finishRecycle();
       //   finishRecicleProcess();
     }
   }, [percent]);
@@ -51,7 +54,8 @@ const RecycleProcess: React.FC<RecyclingProps> = ({ timeDefined }) => {
   };
 
   const timmer = () => {
-    currentTime = currentTime + 1;
+    // currentTime = currentTime + 1;
+    currentTime = Math.floor((Date.now() - startTime) / 1000);
     definePercent();
   };
 
@@ -79,6 +83,7 @@ const RecycleProcess: React.FC<RecyclingProps> = ({ timeDefined }) => {
 
   const startRecicle = () => {
     currentTime = 0;
+    startTime = Date.now();
     runningTimmer.current = setInterval(timmer, 1000);
   };
 

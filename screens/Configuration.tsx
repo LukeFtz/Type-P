@@ -12,7 +12,7 @@ import {
 } from "../utilities/types";
 import { Picker } from "@react-native-picker/picker";
 import { getValues } from "../utilities/values";
-import { defineValue } from "../utilities/controler";
+import { connectAppToFirebase, defineValue } from "../utilities/controler";
 import { BlurView } from "expo-blur";
 
 type screenNavigationProp = StackScreenProps<
@@ -43,7 +43,18 @@ const Configuration: React.FC<screenNavigationProp> = (navigationProps) => {
 
   const [uniTemp, setUniTemp] = useState<number>(0);
   const [decTemp, setDecTemp] = useState<number>(0);
-  const [cenTemp, setCenTemp] = useState<number>(0);
+  const [cenTemp, setCenTemp] = useState<number>(1);
+
+  const getConnections = async () => {
+    let auxApp = await connectAppToFirebase();
+    while (!auxApp) {
+      auxApp = await connectAppToFirebase();
+    }
+  };
+
+  useEffect(() => {
+    getConnections();
+  }, []);
 
   // useEffect(() => {
   //   const auxQnt: valuesNumbers = {
@@ -110,9 +121,12 @@ const Configuration: React.FC<screenNavigationProp> = (navigationProps) => {
             onValueChange={(itemValue) => setDecMin(itemValue)}
             style={{ width: 100, height: 200 }}
           >
-            {NUMBERS.map((item, index) => (
-              <Picker.Item key={index} label={item + ""} value={item} />
-            ))}
+            {NUMBERS.map(
+              (item, index) =>
+                item <= 6 && (
+                  <Picker.Item key={index} label={item + ""} value={item} />
+                )
+            )}
           </Picker>
           <Picker
             selectedValue={uniMin}
@@ -135,7 +149,7 @@ const Configuration: React.FC<screenNavigationProp> = (navigationProps) => {
           style={{ width: 100, height: 200 }}
         >
           {NUMBERS.map((item, index) => {
-            if (item <= 3 && item >= 1) {
+            if (item <= 3) {
               return <Picker.Item key={index} label={item + ""} value={item} />;
             }
           })}

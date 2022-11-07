@@ -11,6 +11,7 @@ import {
   setOvenConfiguration,
   defaultValue,
   resetOvenConfig,
+  finishRecycleProccess,
 } from "./functions";
 
 import { valuesNumbers } from "./types";
@@ -78,6 +79,10 @@ export const cancelHeat = () => {
 
 export const cancelRecycle = () => {
   cancelRecycleProcess();
+};
+
+export const finishRecycle = () => {
+  finishRecycleProccess();
 };
 
 export const defineValue = (props: valuesNumbers) => {

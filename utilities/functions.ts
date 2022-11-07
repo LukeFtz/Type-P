@@ -3,7 +3,11 @@ import { getItemAsync, setItemAsync } from "expo-secure-store";
 import { communication, communicationOven, storageitems } from "./types";
 import { Database, ref, set, get, child } from "firebase/database";
 import store from "../src/storage";
-import { ovenConfig, recycleCanceled } from "../src/reducers/reducer";
+import {
+  heatFinished,
+  ovenConfig,
+  recycleCanceled,
+} from "../src/reducers/reducer";
 
 let dataBase: Database;
 
@@ -44,6 +48,7 @@ export const defaultValue = () => {
 };
 
 export const heatOven = () => {
+  store.dispatch(heatFinished(false));
   const dataFunction: communication = { func: "STRT_HEAT" };
   set(ref(dataBase, TO_OVEN), dataFunction);
 };
@@ -92,6 +97,11 @@ export const cancelHeatProcess = () => {
 
 export const cancelRecycleProcess = () => {
   const dataFunction: communication = { func: "CANCEL_RECYCLE" };
+  set(ref(dataBase, TO_OVEN), dataFunction);
+};
+
+export const finishRecycleProccess = () => {
+  const dataFunction: communication = { func: "RECICLE_DONE" };
   set(ref(dataBase, TO_OVEN), dataFunction);
 };
 
