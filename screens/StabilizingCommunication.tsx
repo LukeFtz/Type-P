@@ -16,8 +16,6 @@ import {
   selectConfigurated,
 } from "../src/reducers/reducer";
 import { useNetInfo } from "@react-native-community/netinfo";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { LinearGradient } from "expo-linear-gradient";
 import Constants from "expo-constants";
 const { width, height } = Dimensions.get("screen");
 
@@ -38,43 +36,6 @@ const StabilizingCommunication: React.FC<screenNavigationProp> = ({
   const netInfo = useNetInfo();
 
   const ovenConfigurated = useSelector(selectConfigurated);
-
-  const Header = (_navigation: { goBack: () => void }) => (
-    <View style={styles.containerHeader}>
-      <TouchableOpacity
-        onPress={() => {
-          if (ovenConfigurated) {
-            resetOvenConfiguration();
-            _navigation.goBack();
-          } else {
-            _navigation.goBack();
-          }
-        }}
-      >
-        <LinearGradient
-          colors={["#C34242", "#fff"]}
-          style={styles.btnBorderView}
-          start={[0, 1]}
-          end={[1, 1]}
-        >
-          <LinearGradient
-            colors={["#E39B9B", "#fff"]}
-            style={styles.btnView}
-            start={[0, 1]}
-            end={[1, 1]}
-          >
-            {/* <Text style={styles.txtBtn}>RECICLAR</Text> */}
-          </LinearGradient>
-        </LinearGradient>
-      </TouchableOpacity>
-    </View>
-  );
-
-  const customHeader = () => {
-    navigation.setOptions({
-      header: ({ navigation }) => <Header {...navigation} />,
-    });
-  };
 
   const getConnections = async () => {
     const auxApp = await connectAppToFirebase();
@@ -103,7 +64,6 @@ const StabilizingCommunication: React.FC<screenNavigationProp> = ({
   }, [netInfo]);
 
   useEffect(() => {
-    customHeader();
     getConnections();
   }, []);
   return (

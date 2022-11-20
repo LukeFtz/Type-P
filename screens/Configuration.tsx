@@ -12,7 +12,11 @@ import {
 } from "../utilities/types";
 import { Picker } from "@react-native-picker/picker";
 import { getValues } from "../utilities/values";
-import { connectAppToFirebase, defineValue } from "../utilities/controler";
+import {
+  connectAppToFirebase,
+  defineValue,
+  getTempTime,
+} from "../utilities/controler";
 import { BlurView } from "expo-blur";
 
 type screenNavigationProp = StackScreenProps<
@@ -24,8 +28,8 @@ const { width } = Dimensions.get("screen");
 const NUMBERS = getValues();
 
 const Configuration: React.FC<screenNavigationProp> = (navigationProps) => {
-  const [tempo, setTempo] = useState<string>("00:05");
-  const [temperatura, setTemperatura] = useState<number>(120);
+  const [tempo, setTempo] = useState<string>("00:10");
+  const [temperatura, setTemperatura] = useState<number>(100);
   const [quantidade, setQuantidade] = useState<number>(100);
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -45,6 +49,8 @@ const Configuration: React.FC<screenNavigationProp> = (navigationProps) => {
   const [decTemp, setDecTemp] = useState<number>(0);
   const [cenTemp, setCenTemp] = useState<number>(1);
 
+  const [alertText, setAlertText] = useState<string>("");
+
   const getConnections = async () => {
     let auxApp = await connectAppToFirebase();
     while (!auxApp) {
@@ -52,19 +58,16 @@ const Configuration: React.FC<screenNavigationProp> = (navigationProps) => {
     }
   };
 
+  const setDefaultValues = () => {
+    const auxDefault = getTempTime(quantidade);
+    setTemperatura(auxDefault.temperature);
+    setTempo(auxDefault.time);
+  };
+
   useEffect(() => {
+    setDefaultValues();
     getConnections();
   }, []);
-
-  // useEffect(() => {
-  //   const auxQnt: valuesNumbers = {
-  //     cen: cenQnt + "",
-  //     dec: decQnt + "",
-  //     uni: uniQnt + "",
-  //   };
-  //   const auxFinalQnt = defineValue(auxQnt);
-  //   setQuantidade(auxFinalQnt);
-  // }, [cenQnt, decQnt, uniQnt]);
 
   const ModalContent = () => {
     const { type } = selectedPicker;
@@ -191,10 +194,25 @@ const Configuration: React.FC<screenNavigationProp> = (navigationProps) => {
         uni: uniQnt + "",
       };
       const auxFinalQnt = defineValue(auxQnt);
-      setQuantidade(auxFinalQnt);
+      if (auxFinalQnt >= 50 && auxFinalQnt <= 300) {
+        setAlertText("");
+        setQuantidade(auxFinalQnt);
+        const auxValues = getTempTime(auxFinalQnt);
+        setTemperatura(auxValues.temperature);
+        setTempo(auxValues.time);
+        setModalVisible(!modalVisible);
+      } else {
+        setAlertText("Valor deve ser entre 50 e 200  g");
+      }
     } else if (type === "TIME") {
       const auxTime = "0" + hour + ":" + decMin + uniMin;
-      setTempo(auxTime);
+      if ((hour === 0 && decMin >= 1) || hour >= 1) {
+        setAlertText("");
+        setTempo(auxTime);
+        setModalVisible(!modalVisible);
+      } else {
+        setAlertText("Tempo dever ser no mínimo 10 min");
+      }
     } else {
       const auxTemp: valuesNumbers = {
         cen: cenTemp + "",
@@ -202,9 +220,14 @@ const Configuration: React.FC<screenNavigationProp> = (navigationProps) => {
         uni: uniTemp + "",
       };
       const auxFinalTemp = defineValue(auxTemp);
-      setTemperatura(auxFinalTemp);
+      if (auxFinalTemp >= 70 && auxFinalTemp <= 300) {
+        setAlertText("");
+        setTemperatura(auxFinalTemp);
+        setModalVisible(!modalVisible);
+      } else {
+        setAlertText("Temperatura deve estar entre 70° e 300°");
+      }
     }
-    setModalVisible(!modalVisible);
   };
 
   return (
@@ -248,6 +271,7 @@ const Configuration: React.FC<screenNavigationProp> = (navigationProps) => {
               </TouchableOpacity>
             </View>
             <View style={styles.viewModalContent}>
+              <Text style={styles.textAlert}>{alertText}</Text>
               <ModalContent />
             </View>
             <View>
@@ -423,5 +447,11 @@ const styles = StyleSheet.create({
     fontFamily: "ZenLight",
     fontSize: 15,
     color: "#fff",
+  },
+  textAlert: {
+    fontFamily: "ZenLight",
+    fontSize: 15,
+    textAlign: "center",
+    color: "#e00909",
   },
 });

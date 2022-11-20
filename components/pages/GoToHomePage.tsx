@@ -5,6 +5,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { RootStackParamList } from "../../utilities/types";
 import { StackScreenProps } from "@react-navigation/stack";
 import { CommonActions } from "@react-navigation/native";
+import Svg, { Path } from "react-native-svg";
 
 type props = StackScreenProps<RootStackParamList>;
 
@@ -33,7 +34,14 @@ const GoToHomePage: React.FC<props> = ({ navigation }) => {
               style={styles.btnView}
               start={[1, 1]}
               end={[0, 1]}
-            ></LinearGradient>
+            >
+              <Svg style={styles.transform} width={51} height={23} fill="none">
+                <Path
+                  d="M.44 10.092a1.5 1.5 0 000 2.122l9.545 9.546a1.5 1.5 0 102.122-2.122L3.62 11.153l8.486-8.485A1.5 1.5 0 109.985.546L.44 10.092zm50.04-.439H1.5v3h48.98v-3z"
+                  fill="#414040"
+                />
+              </Svg>
+            </LinearGradient>
           </LinearGradient>
         </View>
       </TouchableOpacity>

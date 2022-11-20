@@ -17,6 +17,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import Constants from "expo-constants";
 import { Provider } from "react-redux";
 import store from "./src/storage";
+import Svg, { Path } from "react-native-svg";
 
 const { Navigator, Screen } = createStackNavigator<RootStackParamList>();
 
@@ -35,6 +36,12 @@ const Header = (navigation: { goBack: () => void }) => (
           start={[0, 1]}
           end={[1, 1]}
         >
+          <Svg width={23} height={9} fill="none">
+            <Path
+              d="M.596 4.096a.5.5 0 000 .707l3.182 3.182a.5.5 0 00.707-.707L1.656 4.449l2.829-2.828a.5.5 0 00-.707-.707L.596 4.096zm21.987-.147H.95v1h21.634v-1z"
+              fill="#414040"
+            />
+          </Svg>
           {/* <Text style={styles.txtBtn}>RECICLAR</Text> */}
         </LinearGradient>
       </LinearGradient>

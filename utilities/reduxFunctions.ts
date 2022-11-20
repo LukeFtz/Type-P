@@ -14,6 +14,7 @@ import {
   setDefaultReducerValues,
 } from "../src/reducers/reducer";
 import store from "../src/storage";
+import { setDefaultTime } from "../src/reducers/utilities";
 
 let dataBase: Database;
 
@@ -38,6 +39,7 @@ export const verifyDataUpdate = () => {
         store.dispatch(temperature(Number.parseInt(data.val + "")));
       } else if (data.func === "HEAT_DONE") {
         store.dispatch(heatFinished(true));
+        store.dispatch(heating(false));
       } else if (data.func === "RECYCLING") {
         store.dispatch(temperature(Number.parseInt(data.val + "")));
       } else if (data.func === "RECYCLE_STARTED") {
@@ -45,6 +47,7 @@ export const verifyDataUpdate = () => {
         store.dispatch(recycleCanceled(false));
       } else if (data.func === "RECYCLE_FINISHED") {
         store.dispatch(recycleFinished(true));
+        store.dispatch(setDefaultTime());
         store.dispatch(setDefaultReducerValues());
       } else if (data.func === "HEAT_CANCELED") {
         store.dispatch(heatCanceled(true));

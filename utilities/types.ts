@@ -87,3 +87,8 @@ export interface wifiData {
 export interface modalPickerTypes {
   type: "WEIGHT" | "TIME" | "TEMPERATURE";
 }
+
+export interface setupValues {
+  temperature: number;
+  time: string;
+}

@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import communicationReducer from "./reducers/reducer";
+import utilitiesReducer from "./reducers/utilities";
 
 const store = configureStore({
   reducer: {
     communicate: communicationReducer,
+    utilities: utilitiesReducer,
   },
 });
 

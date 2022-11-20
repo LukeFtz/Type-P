@@ -17,6 +17,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 import { currentTemperature } from "../../src/reducers/reducer";
+import { currentRecycleTime } from "../../src/reducers/utilities";
 
 // import { Container } from './styles';
 const { width } = Dimensions.get("screen");
@@ -25,6 +26,7 @@ const RecicleInfo: React.FC<InScreen> = ({ apperInScreen }) => {
   const [timeDef, setTimeDef] = useState<string>("");
   const [timeSec, setTimeSec] = useState<number | null>();
   // const [currentTemp, setCurrentTemp] = useState<number | string>(100);
+  const currentTime = useSelector(currentRecycleTime);
   const currentTemp = useSelector(currentTemperature);
   const [modalVisible, setModalVisible] = useState(false);
   const opacity = useSharedValue<number>(1);
@@ -100,11 +102,11 @@ const RecicleInfo: React.FC<InScreen> = ({ apperInScreen }) => {
       <View style={styles.centerialize}>
         <View style={styles.viewText}>
           <Text style={styles.txtLabel}>Tempo Definido </Text>
-          <Text style={styles.txtLabelBold}> {timeDef}</Text>
+          <Text style={styles.txtLabelBold}> {timeDef}:00</Text>
         </View>
         <View style={styles.viewText}>
           <Text style={styles.txtLabel}>Tempo Atual </Text>
-          <Text style={styles.txtLabelBoldGreen}> {timeDef}</Text>
+          <Text style={styles.txtLabelBoldGreen}> {currentTime}</Text>
         </View>
       </View>
       <View style={styles.centerialize}>

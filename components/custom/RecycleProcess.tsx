@@ -8,8 +8,10 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { useDispatch } from "react-redux";
 import Svg, { Circle } from "react-native-svg";
 import { finishRecycle } from "../../utilities/controler";
+import { updateTime } from "../../src/reducers/utilities";
 
 // import { Container } from './styles';
 
@@ -29,6 +31,7 @@ const RecycleProcess: React.FC<RecyclingProps> = ({ timeDefined }) => {
   const diametroPercent = (sizeCircle - borderWidth) * 2 * Math.PI;
   const progress = useSharedValue(diametroPercent * (100 / 100));
   let startTime: number;
+  const dispatch = useDispatch();
   // const [timeUpdated, setTimeUpdated] = useState<number>(0);
 
   const animatedProgress = useAnimatedProps(() => ({
@@ -36,7 +39,7 @@ const RecycleProcess: React.FC<RecyclingProps> = ({ timeDefined }) => {
   }));
 
   useEffect(() => {
-    if (percent === 100) {
+    if (percent >= 100) {
       clearInterval(runningTimmer.current as NodeJS.Timeout);
       finishRecycle();
       //   finishRecicleProcess();
@@ -56,21 +59,22 @@ const RecycleProcess: React.FC<RecyclingProps> = ({ timeDefined }) => {
   const timmer = () => {
     // currentTime = currentTime + 1;
     currentTime = Math.floor((Date.now() - startTime) / 1000);
+    dispatch(updateTime(currentTime));
     definePercent();
   };
 
   const definePercent = () => {
-    console.log(percent);
+    // console.log(percent);
     const auxPercent = (100 * currentTime) / timeDefined; //let
-    console.log("currentTime: " + currentTime);
-    console.log("timeDefined: " + timeDefined);
+    // console.log("currentTime: " + currentTime);
+    // console.log("timeDefined: " + timeDefined);
     const auxPercente =
       auxPercent - Math.floor(auxPercent) !== 0
         ? auxPercent.toFixed(1)
         : auxPercent;
     setPercent(Number.parseFloat(auxPercente + ""));
-    console.log(auxPercent);
-    console.log(typeof auxPercent);
+    // console.log(auxPercent);
+    // console.log(typeof auxPercent);
     // let auxPercentToProgress = 100 - auxPercent
     const auxProgress = diametroPercent * ((100 - auxPercent) / 100); //let
     progress.value = withTiming(auxProgress, {

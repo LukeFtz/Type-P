@@ -16,6 +16,7 @@ import {
   resetOvenConfiguration,
 } from "../../utilities/controler";
 import store from "../../src/storage";
+import Svg, { Path } from "react-native-svg";
 
 const Forward: React.FC<navigationProps> = ({
   goTo,
@@ -78,7 +79,14 @@ const Forward: React.FC<navigationProps> = ({
             style={styles.btnView}
             start={[1, 1]}
             end={[0, 1]}
-          ></LinearGradient>
+          >
+            <Svg width={49} height={23} fill="none">
+              <Path
+                d="M48.511 12.38a1.5 1.5 0 00.053-2.121L39.258.479a1.5 1.5 0 00-2.174 2.068l8.272 8.693-8.693 8.272a1.5 1.5 0 102.068 2.174l9.78-9.306zM.963 11.638l46.477 1.155.074-3L1.037 8.64l-.074 2.999z"
+                fill="#414040"
+              />
+            </Svg>
+          </LinearGradient>
         </LinearGradient>
       </TouchableOpacity>
     </View>

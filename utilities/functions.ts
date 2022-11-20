@@ -1,6 +1,11 @@
 import { FROM_OVEN, TO_OVEN } from "./values";
 import { getItemAsync, setItemAsync } from "expo-secure-store";
-import { communication, communicationOven, storageitems } from "./types";
+import {
+  communication,
+  communicationOven,
+  setupValues,
+  storageitems,
+} from "./types";
 import { Database, ref, set, get, child } from "firebase/database";
 import store from "../src/storage";
 import {
@@ -109,4 +114,26 @@ export const resetOvenConfig = () => {
   const dataFunction: communication = { func: "SET_DEFAULT" };
   set(ref(dataBase, TO_OVEN), dataFunction);
   store.dispatch(ovenConfig(false));
+};
+
+export const getRecycleConfigs = (value: number) => {
+  let valueToReturn: setupValues;
+
+  if (value >= 50 && value <= 100) {
+    valueToReturn = {
+      temperature: 90,
+      time: "00:15",
+    };
+  } else if (value > 100 && value <= 200) {
+    valueToReturn = {
+      temperature: 80,
+      time: "00:35",
+    };
+  } else {
+    valueToReturn = {
+      temperature: 80,
+      time: "00:40",
+    };
+  }
+  return valueToReturn;
 };

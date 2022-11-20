@@ -12,6 +12,7 @@ import {
   defaultValue,
   resetOvenConfig,
   finishRecycleProccess,
+  getRecycleConfigs,
 } from "./functions";
 
 import { valuesNumbers } from "./types";
@@ -91,4 +92,8 @@ export const defineValue = (props: valuesNumbers) => {
 
 export const resetOvenConfiguration = () => {
   resetOvenConfig();
+};
+
+export const getTempTime = (value: number) => {
+  return getRecycleConfigs(value);
 };

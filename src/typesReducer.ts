@@ -9,3 +9,7 @@ export type reduxValues = {
   heatCanceled: boolean;
   recycleCanceled: boolean;
 };
+
+export type utilitesValues = {
+  currentTime: string;
+};
